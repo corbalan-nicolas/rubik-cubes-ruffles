@@ -1,0 +1,52 @@
+.block {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+#main {
+    display: grid;
+    grid-template-rows: 1fr;
+
+    &:has(> .hidden) {
+        grid-template-columns: 1fr;
+    }
+
+    &:not(:has(> .hidden)) {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+textarea {
+    resize: none;
+}
+
+aside {
+    border: 1px solid red;
+    position: fixed;
+    top: 0;
+    right: 0;
+    max-width: 22rem;
+
+    background-color: #1e1f22;
+    height: 100%;
+    padding: 2rem 1rem;
+
+    div {
+        margin-bottom: 1rem;
+    }
+
+    input, textarea {
+        display: block;
+        width: 100%;
+    }
+}
+
+/**
+* {
+    border: 1px solid lime;
+}
+/**/
+

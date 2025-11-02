@@ -1,0 +1,7 @@
+:root {
+    color-scheme: dark;
+}
+
+nav ul[aria-expanded="false"] {
+    display: none;
+}
