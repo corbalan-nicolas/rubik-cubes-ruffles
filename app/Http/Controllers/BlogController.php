@@ -58,11 +58,17 @@ class BlogController extends Controller
             'desc' => 'required',
         ]);
 
-        // TODO: Cover field
+        // COVER FIELD
+        if ($request->hasFile('cover')) {
+            $data['cover'] = $request->file('cover')->store('covers');
+            // Use "storeAs($route, $name)" to set the name
+        }
+
         $blog = new Blog();
         $blog->title = $data['title'];
         $blog->desc = $data['desc'];
         $blog->author_id = auth()->user()->id;
+        $blog->cover = $data['cover'];
         $blog->save();
 
         return to_route('dashboard.blogs.edit', ['id' => $blog->id]);
@@ -83,6 +89,16 @@ class BlogController extends Controller
         $blog = Blog::findOrFail($id);
 
         $data = $request->only(['title', 'body', 'desc', 'cover', 'cover_alt']);
+
+        $oldCover = null;
+        if ($request->hasFile('cover')) {
+            $data['cover'] = $request->file('cover')->store('covers');
+            $oldCover = $blog->cover;
+        }
+
+        if($oldCover !== null && \Storage::exists($oldCover)) {
+            \Storage::delete($oldCover);
+        }
 
         $blog->body = $data['body'];
         $blog->title = $data['title'];

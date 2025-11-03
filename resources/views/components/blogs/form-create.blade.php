@@ -1,5 +1,6 @@
 <button id="form-create-blog-open-dialog-btn">✍ Write new blog</button>
 
+<!--TODO: Show feedback and open the modal if there's any error -->
 <dialog id="form-create-blog-dialog">
     <div id="form-create-blog-dialog-container">
         <header>
@@ -52,6 +53,7 @@
         </form>
     </div>
 </dialog>
+
 
 <script defer>
     // Variables
