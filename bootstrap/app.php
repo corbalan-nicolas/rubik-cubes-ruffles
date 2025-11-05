@@ -11,9 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        /*$middleware->redirectGuestsTo(function() {
-           //
-        });*/
+        $middleware->redirectGuestsTo(function() {
+            // TODO: Feedback
+           return route('auth.login.show');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

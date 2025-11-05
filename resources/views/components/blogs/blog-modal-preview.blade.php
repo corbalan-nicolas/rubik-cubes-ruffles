@@ -6,7 +6,7 @@
  */
 
 /*
-In terms of usability, I'm thinking this like those "Twitch's unban requests". Of course it's not going to be as
+In terms of usability, I'm thinking this like those "Twitch's unban requests". Of course, it's not going to be as
 good as theirs, but I'll try my best :)
 
 Like, for example, when you accept a publishing request, it should automatically go to the next one, and when you
@@ -44,8 +44,9 @@ deny a publishing request, you should leave some feedback for the author, etc.
 </dialog>
 
 <script defer>
-    const $btn = document.querySelector('#btn-modal-preview-{{ $blog->id }}')
-    const $modal = document.querySelector('#modal-preview-{{ $blog->id }}')
-
-    $btn.addEventListener('click', () => $modal.showModal())
+    {{-- If I don't use variables, I don't have to worry about redeclarating the same variables!!! --}}
+    document.querySelector('#btn-modal-preview-{{ $blog->id }}')?.addEventListener('click', () =>
+    {
+        document.querySelector('#modal-preview-{{ $blog->id }}')?.showModal()
+    })
 </script>

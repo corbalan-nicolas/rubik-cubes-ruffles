@@ -19,17 +19,15 @@ class BlogSeeder extends Seeder
                'title' => 'How to solve a 3x3 cube with 1 algorithm',
                'desc' => 'Believe it or not, it is possible!',
                'body' => "
-                    \n# Now I'm testing how far I can go
-                    \nThis is what happen if I use something good
-                    \n
-                    \n- Just
-                    \n- A
-                    \n- List
-                    \n
-                    \n## There you gooo
-                    \nThis is kinda fine actually, I really like how this works, but I'm affraid this is going to be hard...
+                    <p>Today, we're going to learn</p>
+                    <h1>3x3 cube notations</h1>
+                    <p>This is just a <strong>test</strong></p>
+                    <ul>
+                        <li>List item 1</li>
+                        <li>List item 2</li>
+                    </ul>
                 ",
-               'cover' => '/images/blogs/1.jpg',
+               'cover' => null,
                'status' => 'published',
                'author_id' => 3,
                'verifier_id' => 8,

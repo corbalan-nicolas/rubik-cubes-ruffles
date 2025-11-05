@@ -68,7 +68,7 @@ class BlogController extends Controller
         $blog->title = $data['title'];
         $blog->desc = $data['desc'];
         $blog->author_id = auth()->user()->id;
-        $blog->cover = $data['cover'];
+        $blog->cover = $data['cover'] ?? null;
         $blog->save();
 
         return to_route('dashboard.blogs.edit', ['id' => $blog->id]);
@@ -86,17 +86,23 @@ class BlogController extends Controller
     }
 
     public function update(Request $request, int $id) {
+        Log::debug('[BlogController::update()] Method is being executed.');
         $blog = Blog::findOrFail($id);
 
         $data = $request->only(['title', 'body', 'desc', 'cover', 'cover_alt']);
 
+        Log::debug('[BlogController::update()] Do we have a cover here???');
         $oldCover = null;
         if ($request->hasFile('cover')) {
+            Log::debug('[BlogController::update()] There is a new cover!');
             $data['cover'] = $request->file('cover')->store('covers');
             $oldCover = $blog->cover;
+        } else {
+            $data['cover'] = $blog->cover;
         }
 
         if($oldCover !== null && \Storage::exists($oldCover)) {
+            Log::debug('[BlogController::update()] Deleting old cover and replacing existing cover');
             \Storage::delete($oldCover);
         }
 
@@ -105,12 +111,13 @@ class BlogController extends Controller
         $blog->desc = $data['desc'];
         $blog->cover = $data['cover'];
         $blog->cover_alt = $data['cover_alt'];
-
         $blog->save();
 
-        return [
-            'status' => 'success',
-        ];
+        Log::debug('[BlogController::update()] All good here :), returning response');
+        return response()->json(['data' => [
+            'cover' => $blog->cover,
+            'cover_alt' => $blog->cover_alt
+        ]]);
     }
 
     public function request_publish(Request $request, Blog $blog) {
@@ -145,10 +152,26 @@ class BlogController extends Controller
     }
 
     public function allow_publish(Blog $blog) {
-        $blog->status = 'published';
-        $blog->verifier_id = auth()->user()->id;
-        $blog->save();
+        // If the blogger / company cancels the validation, I don't want it to be published
+        if ($blog->status === 'validating') {
+            $blog->status = 'published';
+            $blog->verifier_id = auth()->user()->id;
+            $blog->save();
+        }
 
         return to_route('dashboard.blogs.publish_requests');
+    }
+
+    public function destroy(Blog $blog) {
+        $blog->delete();
+
+        return to_route('dashboard.blogs');
+    }
+
+    public function move_to_draft(Blog $blog) {
+        $blog->status = 'draft';
+        $blog->save();
+
+        return to_route('dashboard.blogs');
     }
 }

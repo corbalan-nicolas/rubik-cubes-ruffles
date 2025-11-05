@@ -9,66 +9,75 @@
 
 {{--
 TODO: Implement RTE (Rich-text-editor)
+https://quilljs.com/docs/quickstart
 --}}
 
-<x-layouts.blog-edit>
+<x-layouts.blog-editor>
     <x-slot:title>{{ $blog->title }}</x-slot:title>
 
     <header>
-        <a href="{{ route('dashboard.blogs') }}">Go back to dashboard</a>
+        <div>
+            <a
+                href="{{ route('dashboard.blogs') }}"
+                title="Go back to dashboard"
+                aria-label="Go back to dashboard"
+            >
+                <img id="go-back" src="{{ url('/images/brand/qubo-isotype-theme-white.svg') }}" alt="Qubo's logo">
+            </a>
 
-        <label title="Editor">
-            <input type="radio" name="display-controls" value="editor" checked>
-            <span class="sr-only">Editor</span>
-        </label>
-        <label title="Editor and Preview">
-            <input type="radio" name="display-controls" value="editor-and-preview">
-            <span class="sr-only">Editor and preview</span>
-        </label>
-        <label title="Preview">
-            <input type="radio" name="display-controls" value="preview">
-            <span class="sr-only">Preview</span>
-        </label>
+            <div class="header__title">
+                <h1>Edit Blog</h1>
+                <p id="saving-feedback">Every change will be automatically saved</p>
+            </div>
+        </div>
+
+        <button
+            id="btn-options"
+            aria-controls="options"
+        >Show / hide options</button>
     </header>
 
-    <h1>Edit Blog</h1>
-    <p>Every change will be automatically saved</p>
-    <span id="save-state">{{-- Empty / Saving... / Saved --}}</span>
-
     <main id="main">
-        <textarea id="markdown" aria-label="Your blog's body" data-save-on="input" name="body"
-        >{{ old('body', $blog->body) }}</textarea>
+        <div>
+            <div id="editor">
+                {!! $blog->body !!}
+            </div>
+        </div>
 
-        <div id="preview"></div>
-
-        <div id="options">
+        <div id="options" class="active">
             <div>
-                <label for="cover">
-                    <span class="sr-only">Cover (set or change)</span>
-                    <img src="{{ old('cover', $blog->cover) }}" alt="{{ old('cover_alt', $blog->cover_alt) }}">
-                    Cover: {{ $blog->cover }}
-                </label>
-                <input
-                    id="cover"
-                    type="file"
-                    name="cover"
-                    data-save-on="change"
-                >
+                <div>
+                    <label for="cover" title="Change blog's cover">
+                        <span class="sr-only">Cover (set or change)</span>
+                        <x-blogs.cover :blog="$blog" />
+                    </label>
+                    <input
+                        class="sr-only"
+                        id="cover"
+                        type="file"
+                        name="cover"
+                        data-save-on="change"
+                    >
+                </div>
 
-                <label for="cover_alt">Cover description</label>
-                <input
-                    id="cover_alt"
-                    type="text"
-                    name="cover_alt"
-                    placeholder="Description provided for blind users"
-                    data-save-on="input"
-                    value="{{ old('cover_alt', $blog->cover_alt) }}"
-                >
+                <div>
+                    <label for="cover_alt">Cover description</label>
+                    <input
+                        id="cover_alt"
+                        class="input"
+                        type="text"
+                        name="cover_alt"
+                        placeholder="Description provided for blind users"
+                        data-save-on="input"
+                        value="{{ old('cover_alt', $blog->cover_alt) }}"
+                    >
+                </div>
             </div>
 
             <div>
                 <label for="title">Title <span>*</span></label>
                 <input id="title"
+                       class="input"
                        type="text"
                        name="title"
                        data-save-on="input"
@@ -80,6 +89,7 @@ TODO: Implement RTE (Rich-text-editor)
                 <label for="desc">Description <span>*</span></label>
                 <textarea
                     name="desc"
+                    class="textarea"
                     id="desc"
                     data-save-on="input"
                 >{{old('desc', $blog->desc)}}</textarea>
@@ -88,17 +98,17 @@ TODO: Implement RTE (Rich-text-editor)
             @if(auth()->user()->role_id < 4)
                 <form action="{{ route('dashboard.blogs.request_publish', ['blog' => $blog->id]) }}" method="post">
                     @csrf
-                    <button>Request for publish</button>
+                    <button class="btn btn-primary btn-full">Request for publish</button>
                 </form>
             @else
                 <form action="{{ route('dashboard.blogs.publish', ['blog' => $blog->id]) }}" method="post">
                     @csrf
-                    <button>Publish</button>
+                    <button class="btn btn-primary btn-full">Publish</button>
                 </form>
             @endif
         </div>
     </main>
-</x-layouts.blog-edit>
+</x-layouts.blog-editor>
 
 {{--
     SCRIPT
@@ -106,110 +116,91 @@ TODO: Implement RTE (Rich-text-editor)
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script defer>
 // VARIABLES
-const $ = (selector) => document.querySelector(selector)
-const $$ = (selector) => document.querySelectorAll(selector)
+const $formControls = document.querySelectorAll(':is(input, textarea, #editor)')
+let saveTimeout = null;
 
-let saveTimeout = null
-let saveState = ''
-
-const $markdown = $('#markdown');
-const $preview = $('#preview');
-const $displayControllers = $$('[name="display-controls"]')
-
-// Form fields
-const $body = $markdown
-const $title = $('#title')
-const $desc = $('#desc')
-const $cover = $('#cover')
-const $cover_alt = $('#cover_alt')
-
-
-// EVENTS
-$displayControllers.forEach(elem => elem.addEventListener('change', setDisplayClassNames))
-$markdown.addEventListener('input', async () => {
-    updatePreview()
-})
-$$('[data-save-on]').forEach(elem => {
-    const event = elem.dataset.saveOn
-    elem.addEventListener(event, handleSave)
+const quill = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: 'Start writing...'
 })
 
+const $btnOpenAndCloseOptions = document.querySelector('#btn-options')
+const $containerOptions = document.querySelector('#options')
 
 
-// METHODS
-function setDisplayClassNames() {
-    const display = $('[name="display-controls"]:checked').value
 
-    $markdown.className = 'hidden'
-    $preview.className = 'hidden'
+$formControls.forEach($control => $control.addEventListener('input', handleInput))
+$btnOpenAndCloseOptions.addEventListener('click', () => $containerOptions.classList.toggle('active'))
 
-    if (display.includes('editor')) {
-        $markdown.className = 'block'
-    }
 
-    if (display.includes('preview')) {
-        $preview.className = 'block'
-    }
-}
 
-function updatePreview() {
-    const markdown = $markdown.value
-    const html = marked.parse(markdown)
+function handleInput() {
+    document.querySelector('#saving-feedback').innerText = 'Saving...'
 
-    $preview.innerHTML = html
-}
-
-/**
- * This function will be called after 1 sec on those HTMLElements that has the attribute <data-save-on="JS_EVENT">
- */
-function handleSave(event) {
-    if(saveTimeout !== null) {
+    if (saveTimeout !== null) {
         clearTimeout(saveTimeout)
     }
 
-    setSaveState('Saving...')
-    saveTimeout = setTimeout(async () => {
-        // FETCH
-        const fetchBody = {
-            _token: <?= '"'. csrf_token() .'"' ?>,
-            body: $body.value,
-            title: $title.value,
-            desc: $desc.value,
-            cover: $cover.value,
-            cover_alt: $cover_alt.value,
-        }
-
-        const url = '<?= route('dashboard.blogs.update', ['id' => $blog->id]) ?>';
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: JSON.stringify(fetchBody)
-        }
-
-        const res = await fetch(url, options)
-
-        // console.log(res)
-        // console.log(<?='"'. csrf_token() . '"' ?>)
-        // console.log(url, options, event.currentTarget, res)
-        // TODO: cancel the previous fetch if there's one
-
-        clearTimeout(saveTimeout)
-        saveTimeout = null
-        setSaveState('Saved')
-    }, 1000)
+    saveTimeout = setTimeout(handleTimeout, 1000)
 }
 
-function setSaveState(text) {
-    saveState = text
-    ;$('#save-state').innerText = saveState
+async function handleTimeout() {
+    const formData = getFormData()
+    await fetchSave(formData)
+
+    saveTimeout = null
+    document.querySelector('#saving-feedback').innerText = 'Saved'
 }
 
+function getFormData() {
+    /* https://muffinman.io/blog/uploading-files-using-fetch-multipart-form-data/
+       https://developer.mozilla.org/en-US/docs/Web/API/FormData*/
+    // console.log('getFormData()')
+    const formData = new FormData()
 
+    formData.append('_token', '{{ @csrf_token() }}');
 
-// INIT
-setDisplayClassNames()
-updatePreview()
+    formData.append('title', document.querySelector('#title')?.value ?? '')
+    formData.append('desc', document.querySelector('#desc')?.value)
+    formData.append('body', quill.getSemanticHTML())
+
+    formData.append('cover', document.querySelector('#cover')?.files[0] ?? '{{ $blog->cover }}')
+    formData.append('cover_alt', document.querySelector('#cover_alt')?.value)
+
+    return formData
+}
+
+async function fetchSave(body) {
+    // console.log('fetchSave()')
+    const url = "{{ route('dashboard.blogs.update', ['id' => $blog->id]) }}"
+    const options = {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body,
+    }
+
+    const response = await fetch(url, options)
+    const { error, data } = await response.json()
+
+    if (error) {
+        console.error('[blogs-edit.blade.php fetchSave()] Error during save', error)
+        return
+    }
+
+    updateUIElements({...data})
+}
+
+function updateUIElements({cover = '', cover_alt = ''}) {
+    const baseStoragePath = '{{ str_replace('\\', '/', \Storage::url('/')) }}';
+
+    if (cover !== '' && cover !== 'undefined' && cover !== null) {
+        document.querySelector('#cover-{{$blog->id}}').src = baseStoragePath + cover
+    }
+
+    if (cover_alt !== '' && cover !== 'undefined' && cover !== null) {
+        document.querySelector('#cover-{{$blog->id}}').alt = cover_alt ?? ''
+    }
+}
 </script>

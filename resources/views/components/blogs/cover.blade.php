@@ -4,15 +4,10 @@
  */
 ?>
 
-@if ($blog->cover !== null && \Storage::exists($blog->cover))
-    <img class="user-cover" src="{{ \Storage::url($blog->cover) }}" alt="{{ $blog->cover_alt }}">
-@else
-    <img src="{{ url('/images/no-cover-3-2.webp') }}" alt="No cover illustration">
-@endif
 
-<style>
-    .user-cover {
-        /* TODO: Change this line bellow */
-        max-width: min(100%, 300px);
-    }
-</style>
+<img
+    id="cover-{{ $blog->id }}"
+    class="blog-cover"
+    src="{{ $blog->cover ? \Storage::url($blog->cover) : url('/images/no-cover-3-2.webp') }}"
+    alt="{{ $blog->cover_alt ?? '' }}"
+>

@@ -73,4 +73,5 @@ Route::middleware('auth')
         Route::post('/blogs/publish-requests/{blog}/deny', [BlogController::class, 'deny_publish'])->name('blogs.deny_publish');
         Route::post('/blogs/publish-requests/{blog}/allow', [BlogController::class, 'allow_publish'])->name('blogs.allow_publish');
         Route::post('/blogs/{blog}/delete', [BlogController::class, 'destroy'])->name('blogs.destroy');
+        Route::post('/blogs/{blog}/move-to-draft', [BlogController::class, 'move_to_draft'])->name('blogs.move_to_draft');
     });

@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="{{ url('/images/brand/favicon-white.svg') }}" sizes="any" type="image/svg+xml" media="(prefers-color-scheme: light)">
+    <link rel="icon" href="{{ url('/images/brand/favicon-dark.svg') }}" sizes="any" type="image/svg+xml" media="(prefers-color-scheme: dark)">
+
     @if(isset($title))
         <title>{{ $title }} ¬ Qubo</title>
     @else
@@ -10,52 +14,51 @@
     @endif
 
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url('css/main-layout.css') }}">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
-    <header>
-        <nav aria-label="main">
-            <ul>
-                <li><a href="{{ route('ruffles.index') }}">Home</a></li>
-                <li><a href="{{ route('blogs.index') }}">Blogs</a></li>
-                @auth
-                    <li>
-                        <button
-                            id="btn-user-options"
-                            aria-controls="user-options"
-                        >Open / close user options</button>
+    <div id="app">
+        <header>
+            <div class="header container">
+                <div>
+                    <a class="logo-container" href="{{ route('ruffles.index') }}">
+                        <img class="logo" src="{{ url('/images/brand/logotype.svg') }}" alt="Qubo's logotype">
+                    </a>
+                </div>
+                <nav aria-label="main">
+                    <ul>
+                        <li>
+                            <x-nav-link route="ruffles.index">
+                                Home
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link route="blogs.index">
+                                Blogs
+                            </x-nav-link>
+                        </li>
+                    </ul>
+                </nav>
 
-                        <ul aria-expanded="false" id="user-options">
-                            <li><a href="{{ route('dashboard.index') }}">{{ auth()->user()->display_name }}</a></li>
-                            <li>
-                                <form action="{{ route('auth.logout') }}" method="post">
-                                    @csrf
-                                    <button>Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                @else
-                    <li><a href="{{ route('auth.login.show') }}">Login</a></li>
-                    <li><a href="{{ route('auth.register.show') }}">Register</a></li>
-                @endauth
-            </ul>
-        </nav>
-    </header>
-    <main id="main">
-        {{$slot}}
-    </main>
-
-    @auth
-        <script defer>
-            const $btn = document.querySelector('#btn-user-options')
-            const $ul = document.querySelector('#user-options')
-
-            $btn.addEventListener('click', () => {
-                $ul.ariaExpanded = $ul.ariaExpanded === 'true' ? 'false' : 'true'
-            })
-        </script>
-    @endauth
+                <div class="auth-buttons">
+                    @auth
+                        <form action="{{ route('auth.logout') }}" method="post">
+                            @csrf
+                            <button class="btn">Logout</button>
+                        </form>
+                        <a class="btn btn-primary" href="{{ route('dashboard.index') }}">Dashboard</a>
+                    @else
+                        <x-nav-link class="btn" route="auth.login.show">Login</x-nav-link>
+                        <x-nav-link class="btn btn-primary" route="auth.register.show">Register</x-nav-link>
+                    @endauth
+                </div>
+            </div>
+        </header>
+        <main id="main" class="container-sm">
+            {{$slot}}
+        </main>
+    </div>
 </body>
 </html>

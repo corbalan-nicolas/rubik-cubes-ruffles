@@ -1,7 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Aladin&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+
 :root {
-    color-scheme: dark;
+    color-scheme: white;
+
+    --color-red: #faada5;
+    --color-green: #b6eea7;
+    --color-orange: #ffcfa1;
+    --color-blue: #a1c4fc;
+    --color-yellow: #fff699;
+
+    --color-neutral: #eff3f6;
+    --color-neutral-light: #f9f9f9;
+    --color-neutral-lighter: #ffffff;
+
+    --color-text: hsl(0 0% 0% / .75);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Aladin", system-ui;
+}
+
+body {
+    font-family: 'Jost', system-ui;
+    color: var(--color-text);
+    background-color: var(--color-neutral);
 }
 
 nav ul[aria-expanded="false"] {
     display: none;
+
+    --spacing: 1rem;
+}
+
+input, textarea  {
+    display: block;
+    width: 100%;
+    padding: .5rem .75rem;
+    border: 1px solid hsl(0 0% 0% / .2);
+    background-color: transparent;
+
+    &::placeholder {
+        color: hsl(0 0% 0% / .4);
+    }
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.textarea {
+    resize: vertical;
+}
+
+.skip-link {
+    position: absolute;
+    top: -20em;
+    left: 0;
+
+    width: 100%;
+    background-color: var(--color-red);
+    padding: 1rem 0;
+    text-align: center;
+    text-decoration: underline;
+
+    &:focus-visible {
+        top: 0;
+        outline: 0;
+    }
+}
+
+.nav-link {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    padding: .5rem;
+
+
+    .icon {
+        margin-right: .5rem;
+        stroke-width: 1.5;
+    }
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+.nav-li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+button  {
+    border: 0;
+    background-color: transparent;
+}
+
+button, input, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+.btn {
+    display: flex;
+    padding: .5rem 1rem;
+
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.btn {
+    padding: .5rem;
+}
+
+.btn-primary {
+    background-color: var(--color-blue);
+}
+
+.btn-full {
+    justify-content: center;
+    width: 100%;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.logo {
+    height: 3.125rem;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: 1680px;
+    margin-inline: auto;
+}
+
+.container-sm {
+    max-width: 800px;
+    margin-inline: auto;
 }

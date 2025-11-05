@@ -1,0 +1,35 @@
+.modal-container {
+    margin: auto;
+    border: none;
+
+    &::backdrop {
+        background-color: hsl(0 0% 0% / .6);
+    }
+}
+
+.modal {
+    border-radius: 2px;
+    overflow: hidden;
+    background-color: var(--color-neutral);
+}
+
+.modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
+    padding: .5rem 1rem;
+
+    background-color: var(--color-neutral-lighter);
+}
+
+
+.modal__body {
+    padding: .5rem 1rem;
+}
+
+.modal__footer {
+    background-color: var(--color-neutral-light);
+    padding: .5rem 1rem;
+}
