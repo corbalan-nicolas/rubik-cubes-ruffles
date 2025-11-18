@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
 
 class Blog extends Model
 {
@@ -15,7 +14,21 @@ class Blog extends Model
         return $this->belongsTo(User::class, 'verifier_id');
     }
 
+    public function likes() {
+        return $this->belongsToMany(
+            Blog::class,
+            'likes',
+        );
+    }
+
     public function categories() {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(
+    Category::class,
+    'blog_category',
+        );
+    }
+
+    public function getCategoryIds(): array {
+        return $this->categories->pluck('id')->all();
     }
 }

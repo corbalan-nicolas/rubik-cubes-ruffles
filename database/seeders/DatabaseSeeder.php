@@ -20,8 +20,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             BlogSeeder::class,
+            RaffleSeeder::class,
+            BannerSeeder::class,
             // Pivot tables
             BlogCategorySeeder::class,
+            TicketSeeder::class,
         ]);
     }
 }

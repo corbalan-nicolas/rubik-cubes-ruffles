@@ -8,8 +8,8 @@
         Future features / buttons / cards
             - Write new blog
             - Admin my blogs
-            - Participate on current ruffle
-            - Create current ruffle
+            - Participate on current raffle
+            - Create current raffle
             - Report something
             etc :)
      --}}
@@ -20,13 +20,13 @@
     @endif
 
     @if(auth()->user()->role_id >= 3)
-        {{-- Company (prev + admin ruffles) --}}
-
+        {{-- Company (prev + admin raffles) --}}
     @endif
 
     @if(auth()->user()->role_id >= 4)
         {{-- Admin (prev + accept publishment request) --}}
-
+        <a href="{{ route('dashboard.blogs.publish_requests') }}">Publish requests</a>
+        <a href="{{ route('dashboard.all-users') }}">Users</a>
     @endif
 
     @if(auth()->user()->role_id >= 5)

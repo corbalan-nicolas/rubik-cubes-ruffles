@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Laravel\Facades\Image;
 
 class BlogController extends Controller
 {
@@ -16,17 +19,10 @@ class BlogController extends Controller
     }
 
     public function show(int $id) {
-        $blog = Blog::findOrFail($id);
-        $html_body = Str::of($blog->body)->markdown([
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-            'max_nesting_level' => 10, // 10 - 50
-            'max_delimiters_per_line' => 100 // 100 - 1_000
-        ]);
+        $blog = Blog::with('categories')->where('id', $id)->get()->first();
 
         return view('blogs.show', [
-            'blog' => $blog,
-            'html_body' => $html_body,
+            'blog' => $blog
         ]);
     }
 
@@ -75,27 +71,39 @@ class BlogController extends Controller
     }
 
     public function edit(int $id) {
-        $blog = Blog::findOrFail($id);
+        $blog = Blog::with('categories')->where('id', $id)->get()->first();
+        $categories = Category::all();
 
         if ($blog->status === 'published') {
             // TODO: tell the user why this page is not accesible
             return to_route('dashboard.blogs');
         }
 
-        return view('dashboard.blogs-edit', ['blog' => $blog]);
+        return view('dashboard.blogs-edit', ['blog' => $blog, 'categories' => $categories]);
     }
 
     public function update(Request $request, int $id) {
         Log::debug('[BlogController::update()] Method is being executed.');
         $blog = Blog::findOrFail($id);
 
-        $data = $request->only(['title', 'body', 'desc', 'cover', 'cover_alt']);
+        $data = $request->only(['title', 'body', 'desc', 'cover', 'cover_alt', 'categories']);
 
         Log::debug('[BlogController::update()] Do we have a cover here???');
         $oldCover = null;
         if ($request->hasFile('cover')) {
             Log::debug('[BlogController::update()] There is a new cover!');
-            $data['cover'] = $request->file('cover')->store('covers');
+
+            // TODO: Combine resize with resizeCanvas to avoid stretch images
+            $upload = $request->file('cover');
+            $image = Image::read($upload)->resize(300, 158);
+            $path = 'covers/' . Str::random() . '.' . $upload->getClientOriginalExtension();
+            Storage::put(
+              $path,
+              $image->encodeByExtension($upload->getClientOriginalExtension(), quantity: 70)
+            );
+
+            $data['cover'] = $path;
+
             $oldCover = $blog->cover;
         } else {
             $data['cover'] = $blog->cover;
@@ -103,8 +111,10 @@ class BlogController extends Controller
 
         if($oldCover !== null && \Storage::exists($oldCover)) {
             Log::debug('[BlogController::update()] Deleting old cover and replacing existing cover');
-            \Storage::delete($oldCover);
+            Storage::delete($oldCover);
         }
+
+        Log::info('[BlogController::update()] Data:', ['data' => $data]);
 
         $blog->body = $data['body'];
         $blog->title = $data['title'];
@@ -113,6 +123,7 @@ class BlogController extends Controller
         $blog->cover_alt = $data['cover_alt'];
         $blog->save();
 
+        $blog->categories()->sync($request->input('categories', []));
         Log::debug('[BlogController::update()] All good here :), returning response');
         return response()->json(['data' => [
             'cover' => $blog->cover,
@@ -130,7 +141,6 @@ class BlogController extends Controller
     }
 
     public function publish(Request $request, Blog $blog) {
-        // TODO: Validate inputs, role with middleware, and show feedback
         $blog->status = 'published';
         $blog->verifier_id = auth()->user()->id;
         $blog->save();
@@ -144,21 +154,27 @@ class BlogController extends Controller
         return view('dashboard.blogs-requests', ['requests' => $requests]);
     }
 
-    public function deny_publish(Blog $blog) {
-        $blog->status = 'draft';
-        $blog->save();
+    public function handle_publish_request_result(Blog $blog, Request $request) {
+        Log::debug('[BlogController handle_publish_request_result()] Method is being executed');
+        $data = $request->only(['result', 'message']);
 
-        return to_route('dashboard.blogs.publish_requests');
-    }
+        // TODO: Validations? (send a message if the result is deny for example)
 
-    public function allow_publish(Blog $blog) {
-        // If the blogger / company cancels the validation, I don't want it to be published
-        if ($blog->status === 'validating') {
+        // Deny / Allow
+        if($data['result'] === 'deny') {
+            $blog->status = 'draft';
+            $blog->save();
+        } else if ($data['result'] === 'allow' && $blog->status === 'validating') {
+            // If the user has moved the blog to 'draft' while it was being validating,
+            // I don't want to publish it (that is why I made the 2nd validation)
             $blog->status = 'published';
             $blog->verifier_id = auth()->user()->id;
             $blog->save();
         }
 
+        // TODO: Notifications / Feedback
+
+        // Return
         return to_route('dashboard.blogs.publish_requests');
     }
 
@@ -173,5 +189,11 @@ class BlogController extends Controller
         $blog->save();
 
         return to_route('dashboard.blogs');
+    }
+
+    public function like(int $id) {
+        $blog = Blog::findOrFail($id);
+
+        return to_route('blogs.show', ['id' => $id]);
     }
 }

@@ -14,10 +14,10 @@
     @endif
 
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url('css/dashboard-layout.css') }}">
     <link rel="stylesheet" href="{{ url('css/blogs.css') }}">
-    <link rel="stylesheet" href="{{ url('css/modals.css') }}">
 
+    {{-- Tailwindcss --}}
+    @vite('resources/css/app.css')
 </head>
 <body>
 <h1 class="sr-only">Dashboard Qubo</h1>
@@ -25,23 +25,40 @@
 
 <div id="root-modal"></div>
 
-<div id="app">
-    <header>
-        <a class="logo-container" href="{{ route('dashboard.index') }}">
+<div id="app" class="max-w-[1680px] mx-auto min-h-dvh bg-neutral grid grid-cols-[minmax(auto,15rem)_5fr] border">
+    <header class="bg-neutral-lighter py-4 px-2 flex flex-col">
+        <a class="logo-container mb-12" href="{{ route('dashboard.index') }}">
             <img class="logo" src="{{ url('/images/brand/logotype.svg') }}" alt="Qubo's logotype">
         </a>
-        <nav aria-label="main">
-            <ul class="nav-list">
+        <nav class="grow" aria-label="main">
+            <ul class="flex flex-col gap-2">
+
                 <li class="nav-li">
-                    <x-nav-link route="dashboard.index">
+                    <x-nav-link
+                        class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                        route="dashboard.index"
+                    >
                         <x-icons.home />
                         Home
                     </x-nav-link>
                 </li>
 
+                <li class="nav-li">
+                    <x-nav-link
+                        class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                        route="dashboard.my-profile.show"
+                    >
+                        <x-icons.user />
+                        My Profile
+                    </x-nav-link>
+                </li>
+
                 @if(auth()->user()->role_id >= 2)
                     <li class="nav-li">
-                        <x-nav-link route="dashboard.blogs">
+                        <x-nav-link
+                            class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                            route="dashboard.blogs"
+                        >
                             <x-icons.blog />
                             My Blogs
                         </x-nav-link>
@@ -50,36 +67,43 @@
 
                 @if(auth()->user()->role_id >= 3)
                     <li class="nav-li">
-                        <x-nav-link route="dashboard.index">
-                            <x-icons.ruffle />
-                            My Ruffles
+                        <x-nav-link
+                            class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                            route="dashboard.my-raffles"
+                        >
+                            <x-icons.raffle />
+                            My raffles
                         </x-nav-link>
                     </li>
                 @endif
 
                 @if(auth()->user()->role_id >= 4)
                     <li class="nav-li">
-                        <x-nav-link route="dashboard.blogs.publish_requests">
+                        <x-nav-link
+                            class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                            route="dashboard.blogs.publish_requests"
+                        >
                             <x-icons.request />
                             Publish Requests
                         </x-nav-link>
                     </li>
-                @endif
-
-                @if(auth()->user()->role_id >= 5)
-                    {{--<li class="nav-li">
-                        <x-nav-link route="dashboard.index">
+                    <li class="nav-li">
+                        <x-nav-link
+                            class="border-l-6 border-transparent [.active]:bg-neutral-light [.active]:border-text"
+                            route="dashboard.all-users"
+                        >
                             <x-icons.users />
-                            Users
+                            All users
                         </x-nav-link>
-                    </li>--}}
+                    </li>
                 @endif
 
                 <li class="nav-li">
-                    <x-nav-link route="ruffles.index">Exit</x-nav-link>
+                    <x-nav-link route="raffles.index">Exit</x-nav-link>
                 </li>
             </ul>
         </nav>
+
 
         <form action="{{ route('auth.logout') }}" method="post">
             @csrf
@@ -89,7 +113,7 @@
             </button>
         </form>
     </header>
-    <main id="main">
+    <main id="main" class="p-4">
         {{$slot}}
     </main>
 </div>

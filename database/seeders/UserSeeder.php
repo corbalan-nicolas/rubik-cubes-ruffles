@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'User 1',
-                'display_name' => 'd_user_1',
+                'display_name' => '_Display Name :: user1@asd.asd_',
                 'email' => 'user1@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 1,
@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'User 2',
-                'display_name' => 'd_user_2',
+                'display_name' => '_Display Name :: user2@asd.asd_',
                 'email' => 'user2@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 1,
@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 3,
                 'name' => 'Blogger 1',
-                'display_name' => 'd_blogger_1',
+                'display_name' => '_Display Name :: blogger1@asd.asd_',
                 'email' => 'blogger1@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 2,
@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 4,
                 'name' => 'Blogger 2',
-                'display_name' => 'd_blogger_2',
+                'display_name' => '_Display Name :: blogger2@asd.asd_',
                 'email' => 'blogger2@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 2,
@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 5,
                 'name' => 'Company 1',
-                'display_name' => 'd_company_1',
+                'display_name' => '_Display Name :: company1@asd.asd_',
                 'email' => 'company1@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 3,
@@ -61,7 +61,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 6,
                 'name' => 'Company 2',
-                'display_name' => 'd_company_2',
+                'display_name' => '_Display Name :: company2@asd.asd_',
                 'email' => 'company2@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 3,
@@ -70,7 +70,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 7,
                 'name' => 'Admin 1',
-                'display_name' => 'd_admin_1',
+                'display_name' => '_Display Name :: admin1@asd.asd_',
                 'email' => 'admin1@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 4,
@@ -78,7 +78,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 8,
                 'name' => 'Admin 2',
-                'display_name' => 'd_admin_2',
+                'display_name' => '_Display Name :: admin2@asd.asd_',
                 'email' => 'admin2@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 4,
@@ -87,7 +87,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 9,
                 'name' => 'Superadmin 1',
-                'display_name' => 'd_superadmin_1',
+                'display_name' => '_Display Name :: superadmin1@asd.asd_',
                 'email' => 'superadmin1@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 5,
@@ -95,7 +95,7 @@ class UserSeeder extends Seeder
             [
                 'id' => 10,
                 'name' => 'Superadmin 2',
-                'display_name' => 'd_superadmin_2',
+                'display_name' => '_Display Name :: superadmin2@asd.asd_',
                 'email' => 'superadmin2@asd.asd',
                 'password' => Hash::make('asd.asd'),
                 'role_id' => 5,

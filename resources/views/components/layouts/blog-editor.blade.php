@@ -22,6 +22,12 @@
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
     <link rel="stylesheet" href="{{ url('css/editor.css') }}">
 
+    {{-- Multi select --}}
+    <link rel="stylesheet" href="{{ url('css/slimselect.css') }}">
+    <script src="{{ url('js/slimselect.js') }}"></script>
+
+    {{-- Tailwindcss --}}
+    @vite('resources/css/app.css')
 </head>
 <body>
     <div id="app">

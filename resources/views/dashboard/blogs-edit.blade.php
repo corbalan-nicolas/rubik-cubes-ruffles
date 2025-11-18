@@ -1,14 +1,13 @@
 <?php
 /**
- * TODO: View documentation
- * @var $blog
- *
- * All this markdown thing was made following this guide (very useful!): https://javascript.plainenglish.io/how-i-built-a-markdown-editor-in-vanilla-javascript-live-preview-included-350dd8066873
+ * @var \Illuminate\Database\Eloquent\Model $blog
+ * @var \Illuminate\Database\Eloquent\Collection $categories
  */
+
 ?>
 
 {{--
-TODO: Implement RTE (Rich-text-editor)
+RTE documentation:
 https://quilljs.com/docs/quickstart
 --}}
 
@@ -34,13 +33,17 @@ https://quilljs.com/docs/quickstart
         <button
             id="btn-options"
             aria-controls="options"
-        >Show / hide options</button>
+{{--            title="Show / hide sidebar"--}}
+        >
+{{--            <x-icons.sidebar-right />--}}
+            <span class="sr-onlyy">Show / hide sidebar</span>
+        </button>
     </header>
 
     <main id="main">
         <div>
             <div id="editor">
-                {!! $blog->body !!}
+                {!! $blog->body ?? '' !!}
             </div>
         </div>
 
@@ -95,6 +98,19 @@ https://quilljs.com/docs/quickstart
                 >{{old('desc', $blog->desc)}}</textarea>
             </div>
 
+            <div>
+                <label for="categories">Categories *</label>
+                {{-- https://slimselectjs.com/selects#multiple TODO: Apply customize styling --}}
+                <select id="categories" name="categories[]" multiple>
+                    @foreach($categories as $category)
+                        <option
+                            value="{{ $category->id }}"
+                            @selected(in_array($category->id, $blog->getCategoryIds()))
+                        >{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             @if(auth()->user()->role_id < 4)
                 <form action="{{ route('dashboard.blogs.request_publish', ['blog' => $blog->id]) }}" method="post">
                     @csrf
@@ -116,12 +132,23 @@ https://quilljs.com/docs/quickstart
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script defer>
 // VARIABLES
-const $formControls = document.querySelectorAll(':is(input, textarea, #editor)')
+const $formControls = document.querySelectorAll(':is(input, textarea, #editor, selector)')
 let saveTimeout = null;
 
 const quill = new Quill('#editor', {
     theme: 'snow',
     placeholder: 'Start writing...'
+})
+
+let categories = []
+const slimSelect = new SlimSelect({
+    select: '#categories',
+    events: {
+        afterChange: (newValue) => {
+            categories = newValue
+            handleInput()
+        }
+    }
 })
 
 const $btnOpenAndCloseOptions = document.querySelector('#btn-options')
@@ -163,6 +190,9 @@ function getFormData() {
     formData.append('title', document.querySelector('#title')?.value ?? '')
     formData.append('desc', document.querySelector('#desc')?.value)
     formData.append('body', quill.getSemanticHTML())
+    categories.forEach(category => {
+        formData.append('categories[]', category.value)
+    })
 
     formData.append('cover', document.querySelector('#cover')?.files[0] ?? '{{ $blog->cover }}')
     formData.append('cover_alt', document.querySelector('#cover_alt')?.value)

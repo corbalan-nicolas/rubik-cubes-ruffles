@@ -1,0 +1,131 @@
+.banner-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    justify-content: center;
+    border: 1px solid black;
+    position: relative;
+    width: 100%;
+}
+
+.banner {
+    height: 100%;
+}
+
+.model {
+    display: none;
+}
+
+.banner-controls {
+    display: flex;
+    gap: 1rem;
+    place-content: center;
+
+    position: absolute;
+    bottom: 1rem;
+    left: 0;
+    right: 0;
+}
+
+.banner-controls__btn {
+    border: 1px solid lime;
+}
+
+.working-with-ul {
+    display: flex;
+    place-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.working-with-li {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem;
+    background-color: var(--color-neutral-lighter);
+    box-shadow: var(--main-shadow);
+}
+
+section:has(.container--working) {
+    background-color: var(--color-neutral-light);
+}
+
+details {
+    &:not(:last-child) {
+        border-bottom: 1px solid hsl(0 0% 0% / .1);
+    }
+}
+
+details[open] summary .icon {
+    rotate: 180deg;
+}
+
+summary {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 1rem;
+
+    position: relative;
+    padding: .5rem 1rem;
+
+    list-style: none;
+}
+
+.summary__body {
+    margin: 0 1rem .5rem 1rem;
+    padding-left: 1rem;
+    border-left: 6px solid hsl(0 0% 0% / .1);
+}
+
+details[open] .summary__body {
+    height: auto;
+}
+
+summary .icon {
+    transition: all ease 300ms;
+}
+
+.container-sm {
+    padding-block: 2rem;
+    padding-inline: 1rem;
+
+    h2 {
+        margin-block-end: .75rem;
+    }
+}
+
+.container-sm:has(model-viewer) {
+    padding-block: 0;
+}
+
+.container--participate model-viewer {
+    height: calc(100% - 2lh);
+    width: 100%;
+
+    transition: all 300ms ease;
+    &:hover {
+        background-color: hsl(0 0% 0% / .05);
+    }
+}
+
+.container--participate > :last-child {
+    padding-block: 2rem;
+}
+
+@media (width > 720px) {
+    .model {
+        display: block;
+    }
+
+    .container--participate {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.working-with-img {
+    margin-bottom: auto;
+}
+
+.faq

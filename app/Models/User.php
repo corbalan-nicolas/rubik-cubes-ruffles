@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Blog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Blog;
+use PHPUnit\Framework\Attributes\Ticket;
 
 class User extends Authenticatable
 {
@@ -14,8 +15,21 @@ class User extends Authenticatable
         return $this->hasMany(Blog::class);
     }
 
-    public function role() {
+    public function likes() {
+        return $this->belongsToMany(
+            Blog::class,
+            'likes',
+        );
+    }
+
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(Role::class);
+    }
+
+    public function tickets(): \Illuminate\Database\Eloquent\Relations\belongsToMany
+    {
+        return $this->belongsToMany(raffle::class, 'tickets');
     }
 
     /** @use HasFactory<\Database\Factories\UserFactory> */

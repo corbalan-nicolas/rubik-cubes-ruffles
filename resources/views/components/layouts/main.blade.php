@@ -14,35 +14,38 @@
     @endif
 
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url('css/main-layout.css') }}">
+    <link rel="stylesheet" href="{{ url('css/blogs.css') }}">
+
+    {{-- Tailwindcss --}}
+    @vite('resources/css/app.css')
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <div id="app">
-        <header>
-            <div class="header container">
-                <div>
-                    <a class="logo-container" href="{{ route('ruffles.index') }}">
+        <header class="bg-neutral-lighter">
+            <div class="max-w-[1680px] grid grid-cols-[3fr_6fr_3fr] justify-between items-center py-2 px-4">
+                <div class="flex justify-start">
+                    <a class="logo-container" href="{{ route('raffles.index') }}">
                         <img class="logo" src="{{ url('/images/brand/logotype.svg') }}" alt="Qubo's logotype">
                     </a>
                 </div>
                 <nav aria-label="main">
-                    <ul>
+                    <ul class="flex justify-center">
                         <li>
-                            <x-nav-link route="ruffles.index">
+                            <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" route="raffles.index">
                                 Home
                             </x-nav-link>
                         </li>
                         <li>
-                            <x-nav-link route="blogs.index">
+                            <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" route="blogs.index">
                                 Blogs
                             </x-nav-link>
                         </li>
                     </ul>
                 </nav>
 
-                <div class="auth-buttons">
+                <div class="flex justify-end gap-2 items-center">
                     @auth
                         <form action="{{ route('auth.logout') }}" method="post">
                             @csrf
@@ -50,13 +53,13 @@
                         </form>
                         <a class="btn btn-primary" href="{{ route('dashboard.index') }}">Dashboard</a>
                     @else
-                        <x-nav-link class="btn" route="auth.login.show">Login</x-nav-link>
-                        <x-nav-link class="btn btn-primary" route="auth.register.show">Register</x-nav-link>
+                        <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" class="btn" route="auth.login.show">Login</x-nav-link>
+                        <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" class="btn btn-primary" route="auth.register.show">Register</x-nav-link>
                     @endauth
                 </div>
             </div>
         </header>
-        <main id="main" class="container-sm">
+        <main id="main">
             {{$slot}}
         </main>
     </div>

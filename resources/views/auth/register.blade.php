@@ -1,57 +1,99 @@
 <x-layouts.main>
     <x-slot:title>Register</x-slot:title>
 
-    <h1>Register</h1>
-    <form action="{{ route('auth.register') }}" method="post">
-        @csrf
+    <div class="container-sm">
+        <h1>Register</h1>
+        <form action="{{ route('auth.register') }}" method="post">
+            @csrf
 
-        <p>Have an account already? <a href="{{ route('auth.login.show') }}">Login</a></p>
+            <p>Have an account already? <a href="{{ route('auth.login.show') }}">Login</a></p>
 
-        <div>
-            <label for="email">Gmail <span>*</span></label>
-            <input
-                id="email"
-                type="text"
-                name="email"
-                value="{{ old('email') }}"
-                autofocus
-            >
-            @error('email')
-            <small>{{ $message }}</small>
-            @enderror
-        </div>
+            <div>
+                <label for="name">Full name <span>*</span></label>
+                <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    autofocus
+                    @error('name')
+                    aria-invalid="true"
+                    aria-errormessage="name-error"
+                    @enderror
+                >
+                @error('name')
+                <small id="name-error">{{ $message }}</small>
+                @enderror
+            </div>
 
-        <div>
-            <label for="password">Password <span>*</span></label>
-            <input
-                id="password"
-                type="password"
-                name="password"
-            >
-            @error('password')
-            <small>{{ $message }}</small>
-            @enderror
-        </div>
+            <div>
+                <label for="email">Gmail <span>*</span></label>
+                <input
+                    id="email"
+                    type="text"
+                    name="email"
+                    value="{{ old('email') }}"
+                    @error('email')
+                    aria-invalid="true"
+                    aria-errormessage="email-error"
+                    @enderror
+                >
+                @error('email')
+                <small id="email-error">{{ $message }}</small>
+                @enderror
+            </div>
 
-        <div>
-            <label for="confirm_password">Confirm confirm_password <span>*</span></label>
-            <input
-                id="confirm_password"
-                type="password"
-                name="confirm_password"
-            >
-            @error('confirm_password')
-            <small>{{ $message }}</small>
-            @enderror
-        </div>
+            <div>
+                <label for="password">Password <span>*</span></label>
+                <input
+                    id="password"
+                    type="password"
+                    name="password"
+                    @error('password')
+                    aria-invalid="true"
+                    aria-errormessage="password-error"
+                    @enderror
+                >
+                @error('password')
+                <small id="password-error">{{ $message }}</small>
+                @enderror
+            </div>
 
-        <div>
-            <label>
-                <input type="checkbox" name="terms">
-                Accept whatever you have to accept every time you create a new account
-            </label>
-        </div>
+            <div>
+                <label for="confirm_password">Confirm confirm_password <span>*</span></label>
+                <input
+                    id="confirm_password"
+                    type="password"
+                    name="confirm_password"
+                    @error('confirm_password')
+                    aria-invalid="true"
+                    aria-errormessage="confirm_password-error"
+                    @enderror
+                >
+                @error('confirm_password')
+                <small id="confirm_password-error">{{ $message }}</small>
+                @enderror
+            </div>
 
-        <button>Register</button>
-    </form>
+            <div>
+                <label>
+                    @error('terms')
+                    <small id="terms-error">{{ $message }}</small>
+                    @enderror
+                    <input
+                        type="checkbox"
+                        name="terms"
+                        @checked(old('terms'))
+                        @error('terms')
+                        aria-invalid="true"
+                        aria-errormessage="terms-error"
+                        @enderror
+                    >
+                    Accept terms and conditions <a href="#">Legit link to terms and conditions</a>
+                </label>
+            </div>
+
+            <button class="btn btn-primary">Register</button>
+        </form>
+    </div>
 </x-layouts.main>

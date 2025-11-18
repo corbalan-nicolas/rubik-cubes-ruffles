@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -23,7 +25,26 @@ class AuthController extends Controller
     }
 
     public function register(Request $request) {
-        // TODO: [AuthController register()] method
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'confirm_password' => 'required|same:password',
+            'terms' => 'required'
+        ]);
+
+        $data = $request->only('name', 'email', 'password', 'confirm_password', 'terms');
+
+        $user = new User();
+        $user->name = $data['name'];
+        $user->display_name = $data['name'];
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+        $user->save();
+
+        $this->login($request);
+
+        return to_route('dashboard.index');
     }
 
     public function logout(Request $request) {

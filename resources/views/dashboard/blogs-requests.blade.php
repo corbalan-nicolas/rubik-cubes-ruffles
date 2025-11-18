@@ -14,11 +14,11 @@
             <p>First loop</p>
         @endif
 
-        <article>
-            {{ $blog->title }}
+        <x-blogs.blog-modal-preview-card :blog="$blog" />
 
-            <x-blogs.blog-modal-preview :blog="$blog"></x-blogs.blog-modal-preview>
-        </article>
+        @if($loop->last)
+            <x-blogs.blog-modal-preview />
+        @endif
     @empty
         <p>No more publishing requests here! Thank you for your work :)</p>
     @endforelse
