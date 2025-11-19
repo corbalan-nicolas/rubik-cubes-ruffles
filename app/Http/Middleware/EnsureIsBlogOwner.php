@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Blog;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureIsBlogOwner
@@ -23,8 +24,10 @@ class EnsureIsBlogOwner
             $blog = Blog::findOrFail($id);
         }
 
-        // TODO: Feedback
         if ($blog->author_id !== auth()->user()->id) {
+            Session::flash('toast.message', "You cannot proceed because that blog it's not yours");
+            Session::flash('toast.type', 'danger');
+
             return to_route('dashboard.blogs');
         }
 

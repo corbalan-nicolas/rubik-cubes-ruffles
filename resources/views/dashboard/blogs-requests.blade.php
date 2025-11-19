@@ -7,13 +7,9 @@
 <x-layouts.dashboard>
     <x-slot:title>Publish requests</x-slot:title>
 
-    <h1>Publish requests</h1>
+    <h2 class="text-6xl mb-4">Publish requests</h2>
 
     @forelse($requests as $blog)
-        @if($loop->first)
-            <p>First loop</p>
-        @endif
-
         <x-blogs.blog-modal-preview-card :blog="$blog" />
 
         @if($loop->last)

@@ -62,6 +62,8 @@
         <main id="main">
             {{$slot}}
         </main>
+
+        <x-toast-notifications />
     </div>
 </body>
 </html>

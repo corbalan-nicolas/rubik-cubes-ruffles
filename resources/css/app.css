@@ -24,6 +24,19 @@
 
     --font-h: "Aladin", cursive, system-ui;
     --font-t: "Jost", system-ui;
+
+    --animate-highlight: highlight 500ms ease 3;
+
+    @keyframes highlight {
+        0%,
+        100% {
+            filter: brightness(100%);
+        }
+
+        50% {
+            filter: brightness(120%);
+        }
+    }
 }
 
 .blog-body {
@@ -66,6 +79,11 @@
         margin-inline-start: 2rem;
         list-style: decimal;
     }
+}
+
+a:not([class]), .link {
+    text-decoration: underline;
+    color: blue;
 }
 
 .container {

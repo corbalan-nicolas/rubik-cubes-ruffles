@@ -14,6 +14,9 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+        ],
+        [
+            'email.exists' => 'Email does not exist.'
         ]);
 
         if (auth()->attempt($credentials)) {
@@ -21,7 +24,11 @@ class AuthController extends Controller
         }
 
         return back(fallback: route('auth.login'))
-            ->withInput();
+            ->withInput()
+            ->with([
+                'feedback.message' => 'Email or password is incorrect.',
+                'feedback.type' => 'danger'
+            ]);
     }
 
     public function register(Request $request) {

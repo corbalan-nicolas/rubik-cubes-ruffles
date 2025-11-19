@@ -10,7 +10,7 @@
 </section>
 
 <section class="py-2">
-    <h2 class="text-2xl">More information</h2>
+    <h3 class="text-2xl">More information</h3>
 
     <div>
         Total of tickets bought:

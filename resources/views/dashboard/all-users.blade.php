@@ -7,6 +7,7 @@
 <x-layouts.dashboard>
     <x-slot:title>All users</x-slot:title>
 
+    <h2 class="text-6xl mb-4">List of users</h2>
     {{-- If you're here, that means there's at least 1 user 🤷‍ ️--}}
     <ul>
         @foreach($users as $user)

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->enum('status', ['draft', 'published', 'validating'])->default('draft');
 
             /** BLOG CONFIGURATION */
-            $table->boolean('include_title_and_desc_on_body')->default(true);
+            $table->boolean('include_title_and_desc_on_body')->default(true); // For now, I've never used this. Maybe I'll never do
 
             /** FOREIGN KEYS */
             $table->foreignId('author_id')->constrained('users');

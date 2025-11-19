@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Session;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,8 +13,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(function() {
-            // TODO: Feedback
-           return route('auth.login.show');
+            Session::flash('feedback.message', 'You must be logged in to access this page.');
+            Session::flash('feedback.type', 'warning');
+
+            return route('auth.login.show');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

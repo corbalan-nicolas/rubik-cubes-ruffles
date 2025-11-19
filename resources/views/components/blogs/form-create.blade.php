@@ -13,9 +13,9 @@ $dialogSelector= 'hola-mundo';
 
 <!--TODO: Show feedback and open the modal if there's any error -->
 <dialog id="{{ $dialogSelector }}" class="m-auto">
-    <div id="form-create-blog-dialog-container" class="modal">
-        <header class="modal__header">
-            <h2>Create new blog</h2>
+    <div id="form-create-blog-dialog-container" class="bg-neutral">
+        <header class="flex justify-between items-center">
+            <h2 class="px-2 text-xl">Create new blog</h2>
             <button
                 class="btn btn-icon modal__btn-close"
                 type="button"
@@ -25,11 +25,11 @@ $dialogSelector= 'hola-mundo';
                 <span class="sr-only">Close</span>
             </button>
         </header>
-        <form action="{{ route('dashboard.blogs.store') }}" method="post" enctype="multipart/form-data">
+        <form class="p-4" action="{{ route('dashboard.blogs.store') }}" method="post">
             @csrf
 
-            <div class="modal__body">
-                <div>
+            <div>
+                <div class="mb-4">
                     <label for="title">Title <span>*</span></label>
                     <input
                         type="text"
@@ -46,7 +46,7 @@ $dialogSelector= 'hola-mundo';
                     @enderror
                 </div>
 
-                <div>
+                <div class="mb-4">
                     <label for="desc">Description <span>*</span></label>
                     <textarea
                         name="desc"

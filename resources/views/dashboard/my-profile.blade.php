@@ -1,7 +1,7 @@
 <x-layouts.dashboard>
     <x-slot:title>My profile</x-slot:title>
 
-    <h1 class="sr-only">My profile</h1>
+    <h2 class="sr-only">My profile</h2>
 
     <x-user-profile :user="auth()->user()" />
 </x-layouts.dashboard>

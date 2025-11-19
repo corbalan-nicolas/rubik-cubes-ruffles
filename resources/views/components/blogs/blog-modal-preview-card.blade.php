@@ -6,12 +6,21 @@
  */
 ?>
 
-<article>
-    <p>{{ $blog->title }}</p>
-    <p>Wrote it by {{ $blog->author->display_name }}</p>
+<article class="bg-neutral-light grid grid-cols-[auto_1fr]">
+    <x-blogs.cover :blog="$blog" />
 
-    <button
-        data-blog-modal-preview-provider
-        data-blog='@json($blog)'
-    >Review</button>
+    <div class="grid grid-rows-[1fr_auto]">
+        <div class="py-2 px-4">
+            <p class="text-xl font-h">{{ $blog->title }}</p>
+            <p class="text-sm">Wrote it by {{ $blog->author->display_name }}</p>
+        </div>
+
+        <div class="flex py-2 px-4 justify-end">
+            <button
+                class="btn btn-primary"
+                data-blog-modal-preview-provider
+                data-blog='@json($blog)'
+            >Review</button>
+        </div>
+    </div>
 </article>

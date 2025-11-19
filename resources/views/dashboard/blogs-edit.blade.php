@@ -117,6 +117,21 @@ https://quilljs.com/docs/quickstart
             @if(auth()->user()->role_id < 4)
                 <form action="{{ route('dashboard.blogs.request_publish', ['blog' => $blog->id]) }}" method="post">
                     @csrf
+
+                    @if($errors->any())
+                        <div class="bg-red-900/10 p-2 my-4 animate-highlight">
+                            <div class="flex gap-2 items-center">
+                                <x-icons.danger />
+                                <p id="publish-error" class="text-sm">Your blog has some errors</p>
+                            </div>
+                            <ul class="text-sm ps-4 mt-2 list-disc">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <button class="btn btn-primary btn-full">Request for publish</button>
                 </form>
             @else

@@ -32,5 +32,7 @@
     <div id="app" class="grid max-w-[1680px] mx-auto grid-rows-[auto_1fr] min-h-dvh">
         {{ $slot }}
     </div>
+
+    <x-toast-notifications />
 </body>
 </html>

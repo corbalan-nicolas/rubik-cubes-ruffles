@@ -11,9 +11,9 @@
 <x-layouts.dashboard>
     <x-slot:title>My blogs</x-slot:title>
 
-    <h1>My blogs</h1>
+    <h2 class="text-6xl mb-4">My blogs</h2>
 
-    <button data-open-form-create-blog>Write new blog</button>
+    <button data-open-form-create-blog class="btn btn-primary my-2">Write new blog</button>
     <x-blogs.form-create />
 
     @if (!$hasBlogs)
@@ -22,7 +22,7 @@
 
     @if (count($blogsDraft))
         <section>
-            <h2>Drafts</h2>
+            <h3 class="text-4xl my-6">Drafts</h3>
             <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
                 @foreach($blogsDraft as $blog)
                     <x-blogs.card-draft :blog="$blog" />
@@ -33,7 +33,7 @@
 
     @if (count($blogsValidating))
         <section>
-            <h2>Awaiting validation</h2>
+            <h3 class="text-4xl my-6">Awaiting validation</h3>
             <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
                 @foreach($blogsValidating as $blog)
                     <x-blogs.card-validating :blog="$blog" />
@@ -44,7 +44,7 @@
 
     @if (count($blogsPublished))
         <section>
-            <h2>Published</h2>
+            <h3 class="text-4xl my-6">Published</h3>
             <p>Thank you for being part of this!</p>
 
             {{-- Should I let the user unpublish any blog whenever they want? Or should this also be a request?
@@ -58,13 +58,13 @@
     @endif
 
     <!-- MODAL CONFIRM DELETE -->
-    <dialog id="modal-confirm-delete">
-        <div>
+    <dialog id="modal-confirm-delete" class="m-auto">
+        <div class="bg-neutral p-4">
             <form id="modal-confirm-delete-form" action="#" method="post">
                 @csrf
 
-                <p>
-                    Are you sure you want to delete eliminate "<span id="modal-confirm-delete-blog"></span>"?
+                <p class="mb-6">
+                    Are you sure you want to delete eliminate "<span id="modal-confirm-delete-blog" class="font-semibold"></span>"?
                     This action cannot be undone.
                 </p>
 
@@ -78,8 +78,17 @@
                 https://ux.stackexchange.com/questions/112757/what-order-should-a-dialog-boxes-options-appear-in
                 https://uxplanet.org/primary-secondary-action-buttons-c16df9b36150
                  -->
-                <button>Delete</button>
-                <button id="modal-confirm-delete-btn-close" type="button">Cancel</button>
+                <div class="flex justify-end gap-4">
+                    <button
+                        class="py-2 px-4 cursor-pointer bg-red-300 hover:bg-red-300/80 transition"
+                    >Delete</button>
+
+                    <button
+                        class="py-2 px-4 cursor-pointer border border-black/10"
+                        id="modal-confirm-delete-btn-close"
+                        type="button"
+                    >Cancel</button>
+                </div>
             </form>
         </div>
     </dialog>
@@ -112,15 +121,24 @@
 
 
     <!-- MODAL CONFIRM CANCEL REQUEST -->
-    <dialog id="modal-confirm-cancel-validation">
-        <div>
-            <form id="modal-confirm-cancel-validation-form" action="#" method="post">
+    <dialog id="modal-confirm-cancel-validation" class="m-auto">
+        <div class="bg-neutral">
+            <form id="modal-confirm-cancel-validation-form" class="p-4" action="#" method="post">
                 @csrf
 
-                <p>Are you sure you want to move "<span id="modal-confirm-cancel-validation-blog"></span>" to your drafts?</p>
+                <p class="mb-6">Are you sure you want to move "<span id="modal-confirm-cancel-validation-blog" class="font-semibold"></span>" to your drafts?</p>
 
-                <button>Move to draft</button>
-                <button id="modal-confirm-cancel-validation-btn-close" type="button">Cancel</button>
+                <div class="flex justify-end gap-4">
+                    <button
+                        class="py-2 px-4 cursor-pointer bg-red-300 hover:bg-red-300/80 transition"
+                    >Move to draft</button>
+
+                    <button
+                        class="py-2 px-4 cursor-pointer border border-black/10"
+                        id="modal-confirm-cancel-validation-btn-close"
+                        type="button"
+                    >Cancel</button>
+                </div>
             </form>
         </div>
     </dialog>

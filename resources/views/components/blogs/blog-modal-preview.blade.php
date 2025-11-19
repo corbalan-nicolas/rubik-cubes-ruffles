@@ -11,7 +11,8 @@ $modalSelector = 'blog-modal-preview';
     <div class="bg-neutral">
         <div class="flex justify-between items-center border-b border-black/10 bg-neutral-lighter">
             <div class="py-2 px-4">
-                <h2 id="{{ $modalSelector }}__title" class="text-xl">__BLOG_TITLE__</h2>
+
+                <p id="{{ $modalSelector }}__title" class="font-h text-xl">__BLOG_TITLE__</p>
                 <p class="text-sm">Wrote it by <span id="{{ $modalSelector }}__author">__AUTHOR__</span></p>
             </div>
 

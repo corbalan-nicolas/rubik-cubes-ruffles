@@ -6,7 +6,9 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\Blog;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
 
@@ -63,8 +65,10 @@ class BlogController extends Controller
         $categories = Category::all();
 
         if ($blog->status === 'published') {
-            // TODO: tell the user why this page is not accesible
-            return to_route('dashboard.blogs');
+            return to_route('dashboard.blogs')
+                ->with(
+                    ['toast.message' => 'To edit this blog, you have to unpublish it first']
+                );
         }
 
         return view('dashboard.blogs-edit', ['blog' => $blog, 'categories' => $categories]);
@@ -119,12 +123,32 @@ class BlogController extends Controller
         ]]);
     }
 
-    public function request_publish(Request $request, Blog $blog) {
-        // TODO Validate inputs, role with middleware, and show feedback
-        Log::debug('Validating');
+    public function request_publish(Blog $blog) {
+        $data = [
+            'title' => $blog->title,
+            'desc' => $blog->desc,
+            'cover' => $blog->cover,
+            'cover_alt' => $blog->cover_alt,
+            'body' => $blog->body,
+        ];
+
+        $validator = Validator::make($data, [
+            'title' => 'required|max:255',
+            'desc' => 'required|max:255',
+            'cover' => 'required',
+            'cover_alt' => 'required',
+            'body' => 'required|max:65000|min:100',
+        ]);
+
+        if ($validator->fails()) {
+            return to_route('dashboard.blogs.edit', ['id' => $blog->id])
+                ->withErrors($validator);
+        }
+
         $blog->status = 'validating';
         $blog->save();
 
+        Session::flash('toast.message', 'Your request has been published successfully. The validation process could take a couple of days');
         return to_route('dashboard.blogs');
     }
 

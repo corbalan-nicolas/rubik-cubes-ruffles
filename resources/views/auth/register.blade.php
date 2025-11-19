@@ -2,13 +2,16 @@
     <x-slot:title>Register</x-slot:title>
 
     <div class="container-sm">
-        <h1>Register</h1>
+        <h1 class="text-6xl my-6">Register</h1>
+
+        <x-feedback-message />
+
         <form action="{{ route('auth.register') }}" method="post">
             @csrf
 
-            <p>Have an account already? <a href="{{ route('auth.login.show') }}">Login</a></p>
+            <p>Have an account already? <a class="link" href="{{ route('auth.login.show') }}">Login</a></p>
 
-            <div>
+            <div class="mb-4">
                 <label for="name">Full name <span>*</span></label>
                 <input
                     id="name"
@@ -26,7 +29,7 @@
                 @enderror
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="email">Gmail <span>*</span></label>
                 <input
                     id="email"
@@ -43,7 +46,7 @@
                 @enderror
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="password">Password <span>*</span></label>
                 <input
                     id="password"
@@ -59,7 +62,7 @@
                 @enderror
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="confirm_password">Confirm confirm_password <span>*</span></label>
                 <input
                     id="confirm_password"
@@ -75,11 +78,8 @@
                 @enderror
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label>
-                    @error('terms')
-                    <small id="terms-error">{{ $message }}</small>
-                    @enderror
                     <input
                         type="checkbox"
                         name="terms"
@@ -91,6 +91,9 @@
                     >
                     Accept terms and conditions <a href="#">Legit link to terms and conditions</a>
                 </label>
+                @error('terms')
+                <small id="terms-error" class="block">{{ $message }}</small>
+                @enderror
             </div>
 
             <button class="btn btn-primary">Register</button>

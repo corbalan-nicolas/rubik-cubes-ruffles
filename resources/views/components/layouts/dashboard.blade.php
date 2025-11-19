@@ -115,6 +115,8 @@
     <main id="main" class="p-4">
         {{$slot}}
     </main>
+
+    <x-toast-notifications />
 </div>
 </body>
 </html>
