@@ -20,7 +20,6 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url('css/editor.css') }}">
 
     {{-- Multi select --}}
     <link rel="stylesheet" href="{{ url('css/slimselect.css') }}">
@@ -30,7 +29,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <div id="app">
+    <div id="app" class="grid max-w-[1680px] mx-auto grid-rows-[auto_1fr] min-h-dvh">
         {{ $slot }}
     </div>
 </body>

@@ -4,17 +4,17 @@
  */
 ?>
 
-<article class="card">
-    <div class="card__cover">
+<article class="grid grid-rows-[auto_1fr]">
+    <div>
         <x-blogs.cover :blog="$blog" />
     </div>
-    <div class="card__body">
-        <div class="card__info">
-            <h3 class="card__title">{{ $blog->title ?? 'Untitled blog' }}</h3>
+    <div class="grid grid-rows-[1fr_auto]">
+        <div class="bg-neutral-lighter py-2 px-4 min-w-0">
+            <h3 class="truncate">{{ $blog->title ?? 'Untitled blog' }}</h3>
             <p class="card__desc">{{ $blog->desc }}</p>
         </div>
 
-        <div class="card__actions">
+        <div class="p-2 bg-neutral-light flex justify-end items-center gap-4">
             <button
                 class="btn btn-danger"
                 data-open-modal-confirm-delete

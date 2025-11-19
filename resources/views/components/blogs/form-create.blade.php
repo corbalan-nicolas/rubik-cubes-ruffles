@@ -1,11 +1,26 @@
-<button id="form-create-blog-open-dialog-btn">✍ Write new blog</button>
+<?php
+/**
+ * This modal has to be open through an HTML element that has a
+ * data-open-form-create-blog attribute. For now, it's meant to be
+ * open with 1 single button / element, so if you have multiple
+ * elements with data-open-form-create-blog it will only take the
+ * first one founded
+ */
+
+$dialogSelector = \Illuminate\Support\Str::uuid();
+$dialogSelector= 'hola-mundo';
+?>
 
 <!--TODO: Show feedback and open the modal if there's any error -->
-<dialog id="form-create-blog-dialog" class="modal-container">
+<dialog id="{{ $dialogSelector }}" class="m-auto">
     <div id="form-create-blog-dialog-container" class="modal">
         <header class="modal__header">
             <h2>Create new blog</h2>
-            <button class="btn btn-icon modal__btn-close" type="button" id="form-create-blog-close-dialog-btn">
+            <button
+                class="btn btn-icon modal__btn-close"
+                type="button"
+                data-close-form-create-blog
+            >
                 <x-icons.close />
                 <span class="sr-only">Close</span>
             </button>
@@ -14,13 +29,6 @@
             @csrf
 
             <div class="modal__body">
-                <div>
-                    <label for="cover">
-                        <span class="sr-only">Cover</span>
-                    </label>
-                    <input class="hidden" type="file" id="cover" name="cover">
-                </div>
-
                 <div>
                     <label for="title">Title <span>*</span></label>
                     <input
@@ -63,29 +71,22 @@
 
 
 <script defer>
-    // Variables
-    const $dialog = document.querySelector('#form-create-blog-dialog')
-    const $dialogContainer = document.querySelector('#form-create-blog-dialog-container')
-    const $btnOpen = document.querySelector('#form-create-blog-open-dialog-btn')
-    const $btnClose = document.querySelector('#form-create-blog-close-dialog-btn')
+    const FormCreate = {
+        $dialog: document.querySelector('[id="{{ $dialogSelector }}"]'),
+        $opener: document.querySelector('[data-open-form-create-blog]'),
+        $closer: document.querySelector('[data-close-form-create-blog]'),
 
-    // Events
-    $btnOpen.addEventListener('click', handleOpenDialog)
-    $btnClose.addEventListener('click', handleCloseDialog)
-    $dialog.addEventListener('click', handleCloseDialog)
-    $dialogContainer.addEventListener('click', (event) => event.stopPropagation())
+        handleOpen() {
+            this.$dialog.showModal()
+        },
 
-    // Methods
-    function handleOpenDialog() {
-        $dialog.showModal()
+        handleClose() {
+            this.$dialog.close()
+        }
     }
 
-    function handleCloseDialog() {
-        $dialog.close()
-    }
-
-    // Init
-    document.querySelector('#root-modal').append($dialog)
+    FormCreate.$opener.addEventListener('click', () => FormCreate.handleOpen())
+    FormCreate.$closer.addEventListener('click', () => FormCreate.handleClose())
 </script>
 
 <style>

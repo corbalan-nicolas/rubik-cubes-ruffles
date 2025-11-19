@@ -13,6 +13,7 @@
 
     <h1>My blogs</h1>
 
+    <button data-open-form-create-blog>Write new blog</button>
     <x-blogs.form-create />
 
     @if (!$hasBlogs)
@@ -22,7 +23,7 @@
     @if (count($blogsDraft))
         <section>
             <h2>Drafts</h2>
-            <div class="card-list">
+            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
                 @foreach($blogsDraft as $blog)
                     <x-blogs.card-draft :blog="$blog" />
                 @endforeach
@@ -33,7 +34,7 @@
     @if (count($blogsValidating))
         <section>
             <h2>Awaiting validation</h2>
-            <div class="card-list">
+            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
                 @foreach($blogsValidating as $blog)
                     <x-blogs.card-validating :blog="$blog" />
                 @endforeach
@@ -48,7 +49,7 @@
 
             {{-- Should I let the user unpublish any blog whenever they want? Or should this also be a request?
              Honestly, I'm not really sure tbh, but I'll allow it just to keep things simple 🤷‍♂️ --}}
-            <div class="card-list">
+            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
                 @foreach($blogsPublished as $blog)
                     <x-blogs.card-published :blog="$blog" />
                 @endforeach

@@ -14,19 +14,19 @@ https://quilljs.com/docs/quickstart
 <x-layouts.blog-editor>
     <x-slot:title>{{ $blog->title }}</x-slot:title>
 
-    <header>
-        <div>
+    <header class="flex justify-between items-center py-2 px-4 bg-neutral-lighter border-b-black/10">
+        <div class="flex items-center gap-4">
             <a
                 href="{{ route('dashboard.blogs') }}"
                 title="Go back to dashboard"
                 aria-label="Go back to dashboard"
             >
-                <img id="go-back" src="{{ url('/images/brand/qubo-isotype-theme-white.svg') }}" alt="Qubo's logo">
+                <img class="h-12" src="{{ url('/images/brand/qubo-isotype-theme-white.svg') }}" alt="Qubo's logo">
             </a>
 
             <div class="header__title">
-                <h1>Edit Blog</h1>
-                <p id="saving-feedback">Every change will be automatically saved</p>
+                <h1 class="text-lg">Editing Blog</h1>
+                <p id="saving-feedback" class="text-sm font-light">Every change will be automatically saved</p>
             </div>
         </div>
 
@@ -40,27 +40,30 @@ https://quilljs.com/docs/quickstart
         </button>
     </header>
 
-    <main id="main">
+    <main id="main" class="overflow-hidden grid grid-cols-1 grid-rows-1 has-[#options.active]:grid-cols-[7.5fr_2.5fr]">
         <div>
-            <div id="editor">
+            <div
+                id="editor"
+                class="h-full blog-body"
+            >
                 {!! $blog->body ?? '' !!}
             </div>
         </div>
 
-        <div id="options" class="active">
+        <div id="options" class="not-[.active]:hidden active bg-neutral-light p-4">
             <div>
                 <div>
-                    <label for="cover" title="Change blog's cover">
-                        <span class="sr-only">Cover (set or change)</span>
-                        <x-blogs.cover :blog="$blog" />
+                    <label for="cover" title="Change blog's cover" aria-label="Cover">
+                        <x-blogs.cover class="w-full cursor-pointer hover:brightness-90" :blog="$blog" />
                     </label>
-                    <input
-                        class="sr-only"
-                        id="cover"
-                        type="file"
-                        name="cover"
-                        data-save-on="change"
-                    >
+                    <div class="hidden">
+                        <input
+                            id="cover"
+                            type="file"
+                            name="cover"
+                            data-save-on="change"
+                        >
+                    </div>
                 </div>
 
                 <div>
@@ -132,10 +135,19 @@ https://quilljs.com/docs/quickstart
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script defer>
 // VARIABLES
-const $formControls = document.querySelectorAll(':is(input, textarea, #editor, selector)')
+const $formControls = document.querySelectorAll(':is(input, textarea, selector)')
 let saveTimeout = null;
 
+const toolbar = [
+    [{'header': ['normal', '1', '2','3','4','5','6']}],
+    ['bold', 'italic', 'underline', 'strike', 'link'],
+    [{list: 'ordered'}, {list:'bullet'}],
+    ['image', 'video']
+]
 const quill = new Quill('#editor', {
+    modules: {
+      toolbar
+    },
     theme: 'snow',
     placeholder: 'Start writing...'
 })
@@ -157,6 +169,7 @@ const $containerOptions = document.querySelector('#options')
 
 
 $formControls.forEach($control => $control.addEventListener('input', handleInput))
+quill.on('editor-change', handleInput)
 $btnOpenAndCloseOptions.addEventListener('click', () => $containerOptions.classList.toggle('active'))
 
 
@@ -189,7 +202,7 @@ function getFormData() {
 
     formData.append('title', document.querySelector('#title')?.value ?? '')
     formData.append('desc', document.querySelector('#desc')?.value)
-    formData.append('body', quill.getSemanticHTML())
+    formData.append('body', quill.root.innerHTML)
     categories.forEach(category => {
         formData.append('categories[]', category.value)
     })

@@ -16,6 +16,7 @@
     @if(auth()->user()->role_id >= 2)
         {{-- Blogger (admin his blogs) --}}
         <a href="{{ route('dashboard.blogs') }}">📖 See my current blogs</a>
+        <button data-open-form-create-blog>Write a new blog</button>
         <x-blogs.form-create />
     @endif
 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ $desc ?? "Participate on Rubik's cube raffles with just USD$0.99!" }}">
 
     <link rel="icon" href="{{ url('/images/brand/favicon-white.svg') }}" sizes="any" type="image/svg+xml" media="(prefers-color-scheme: light)">
     <link rel="icon" href="{{ url('/images/brand/favicon-dark.svg') }}" sizes="any" type="image/svg+xml" media="(prefers-color-scheme: dark)">
@@ -14,7 +15,6 @@
     @endif
 
     <link rel="stylesheet" href="{{ url('css/styles.css') }}">
-    <link rel="stylesheet" href="{{ url('css/blogs.css') }}">
 
     {{-- Tailwindcss --}}
     @vite('resources/css/app.css')
@@ -24,14 +24,14 @@
 
     <div id="app">
         <header class="bg-neutral-lighter">
-            <div class="max-w-[1680px] grid grid-cols-[3fr_6fr_3fr] justify-between items-center py-2 px-4">
+            <div class="max-w-[1680px] mx-auto grid grid-cols-[3fr_6fr_3fr] justify-between items-center py-2 px-4">
                 <div class="flex justify-start">
                     <a class="logo-container" href="{{ route('raffles.index') }}">
                         <img class="logo" src="{{ url('/images/brand/logotype.svg') }}" alt="Qubo's logotype">
                     </a>
                 </div>
                 <nav aria-label="main">
-                    <ul class="flex justify-center">
+                    <ul class="flex justify-center gap-4">
                         <li>
                             <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" route="raffles.index">
                                 Home

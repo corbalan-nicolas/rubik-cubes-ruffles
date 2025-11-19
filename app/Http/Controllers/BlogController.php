@@ -44,27 +44,15 @@ class BlogController extends Controller
     }
 
     public function store(Request $request) {
-        // It's not allowed to create a blog
-        if(auth()->user()->role->id < 2) {
-            return view('dashboard.index');
-        }
-
         $data = $request->validate([
             'title' => 'required',
             'desc' => 'required',
         ]);
 
-        // COVER FIELD
-        if ($request->hasFile('cover')) {
-            $data['cover'] = $request->file('cover')->store('covers');
-            // Use "storeAs($route, $name)" to set the name
-        }
-
         $blog = new Blog();
         $blog->title = $data['title'];
         $blog->desc = $data['desc'];
         $blog->author_id = auth()->user()->id;
-        $blog->cover = $data['cover'] ?? null;
         $blog->save();
 
         return to_route('dashboard.blogs.edit', ['id' => $blog->id]);

@@ -4,9 +4,7 @@
  * this is the component that will provide all the information to this one
  */
 
-use Illuminate\Support\Str;
-
-$modalSelector = "blog-modal-preview";
+$modalSelector = 'blog-modal-preview';
 ?>
 
 <dialog id="{{ $modalSelector }}" class="m-auto backdrop:bg-black/60">
@@ -26,7 +24,7 @@ $modalSelector = "blog-modal-preview";
         </div>
 
         <div id="{{ $modalSelector }}__body" class="py-2 px-4">
-            Blog body
+            __BLOG_BODY__
         </div>
 
 
@@ -70,7 +68,7 @@ $modalSelector = "blog-modal-preview";
         },
         baseURL: '{{ route('dashboard.blogs.handle_publish_request_result', ['blog' => '__ID__']) }}',
 
-        $modal: document.querySelector('#{{ $modalSelector }}'),
+        $modal: document.querySelector('[id="{{ $modalSelector }}"]'),
         $closeModal: document.querySelectorAll('[data-close-modal]'),
 
         $title: document.querySelector('#{{ $modalSelector }}__title'),

@@ -9,15 +9,17 @@
     --color-blue: #a1c4fc;
     --color-yellow: #fff699;
 
+
+    --main-shadow: 0 2px 6px 0 hsl(0 0% 0% / 0.1);
+
+    scroll-behavior: smooth;
+
+    /*TAILWIND THEME (DONE)*/
     --color-neutral: #eff3f6;
     --color-neutral-light: #f9f9f9;
     --color-neutral-lighter: #ffffff;
 
     --color-text: hsl(0 0% 0% / .75);
-
-    --main-shadow: 0 2px 6px 0 hsl(0 0% 0% / 0.1);
-
-    scroll-behavior: smooth;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -135,18 +137,6 @@ button, input, textarea {
     width: 100%;
 }
 
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-}
-
 .logo {
     height: 3.125rem;
 }
@@ -154,60 +144,4 @@ button, input, textarea {
 .logo-container {
     display: flex;
     justify-content: center;
-}
-
-ul[class] {
-    list-style: none;
-}
-
-.blog-body {
-    p {
-        margin-bottom: 1rem;
-    }
-
-    ul {
-        margin-bottom: 1rem;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        margin-bottom: .5rem;
-    }
-}
-
-#go-up {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-
-    display: grid;
-    place-content: center;
-    padding: .5rem;
-
-    border: 2px solid var(--color-neutral-lighter);
-    background-color: var(--color-green);
-    border-radius: 64rem;
-}
-
-ul:not([class]),
-ol:not([class]) {
-    padding-left: 3rem;
-}
-
-.container {
-    max-width: 1680px;
-    margin-inline: auto;
-}
-
-.container-sm {
-    max-width: 800px;
-    margin-inline: auto;
-}
-
-.text-center {
-    text-align: center;
 }

@@ -13,6 +13,7 @@ class Cover extends Component
      */
     public function __construct(
         public \Illuminate\Database\Eloquent\Model $blog,
+        public string $class = ""
     ){}
 
     /**
