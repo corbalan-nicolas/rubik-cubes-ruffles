@@ -1,7 +1,7 @@
 <x-layouts.main>
     <x-slot:title>Login</x-slot:title>
 
-    <div class="container-sm">
+    <div class="container-sm px-4">
         <h1 class="text-6xl my-6">Login</h1>
 
         <x-feedback-message />

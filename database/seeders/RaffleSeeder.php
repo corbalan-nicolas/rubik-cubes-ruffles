@@ -16,10 +16,10 @@ class RaffleSeeder extends Seeder
         DB::table('raffles')->insert([
             [
                 'id' => 1,
-                'title' => 'it\'s 8th GAN anniversary!',
+                'title' => 'its 8th GAN anniversary!',
                 'desc' => 'Bla bla bla, we love you and bla bla bla',
                 'start_date' => '2025-11-13 18:28:28',
-                'end_date' => '2025-12-25 00:00:00',
+                'end_date' => '2026-12-25 00:00:00',
                 'sponsor_id' => 5
             ]
         ]);

@@ -10,19 +10,19 @@
     <x-slot:title>{{ $blog->title }}</x-slot:title>
     <x-slot:desc>{{ $blog->desc }}</x-slot:desc>
 
-    <section class="bg-neutral-light">
-        <div class="container-sm flex justify-start items-end pb-2 pt-60">
+    <div class="bg-neutral-light">
+        <div class="container-sm px-4 flex justify-start items-end pb-2 pt-60">
             <p class="text-xl">Published by <span class="font-bold">{{ $blog->author->display_name }}</span></p>
         </div>
-    </section>
+    </div>
 
-    <div class="container-sm py-2">
+    <div class="container-sm px-4 py-2">
         @foreach($blog->categories as $category)
             <span class="text-sm inline-block px-4 bg-white/80 rounded-full">{{$category->name}}</span>
         @endforeach
     </div>
 
-    <section class="container-sm overflow-hidden blog-body">
+    <section class="container-sm px-4 overflow-hidden blog-body">
         {!! $blog->body !!}
     </section>
 

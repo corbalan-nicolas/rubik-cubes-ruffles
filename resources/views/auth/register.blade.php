@@ -1,7 +1,7 @@
 <x-layouts.main>
     <x-slot:title>Register</x-slot:title>
 
-    <div class="container-sm">
+    <div class="container-sm px-4">
         <h1 class="text-6xl my-6">Register</h1>
 
         <x-feedback-message />
@@ -30,7 +30,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="email">Gmail <span>*</span></label>
+                <label for="email">Email <span>*</span></label>
                 <input
                     id="email"
                     type="text"
@@ -63,7 +63,7 @@
             </div>
 
             <div class="mb-4">
-                <label for="confirm_password">Confirm confirm_password <span>*</span></label>
+                <label for="confirm_password">Confirm password <span>*</span></label>
                 <input
                     id="confirm_password"
                     type="password"

@@ -25,7 +25,6 @@ class EnsureUserHasMinimumRole
             return to_route('auth.login.show');
         }
 
-        Log::info('Min role', ['allowed' => auth()->user()->role_id < $minRole]);
         if (auth()->user()->role_id < $minRole) {
             Session::flash('toast.message', 'Your role is not enough to access this page.');
             Session::flash('toast.type', 'info');

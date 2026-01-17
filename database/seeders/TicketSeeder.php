@@ -17,18 +17,22 @@ class TicketSeeder extends Seeder
             [
                 'user_id' => 2,
                 'raffle_id' => 1,
+                'payment_id' => 1
             ],
             [
                 'user_id' => 2,
                 'raffle_id' => 1,
+                'payment_id' => 2
             ],
             [
                 'user_id' => 2,
                 'raffle_id' => 1,
+                'payment_id' => 2,
             ],
             [
                 'user_id' => 2,
                 'raffle_id' => 1,
+                'payment_id' => 2,
             ],
         ]);
     }

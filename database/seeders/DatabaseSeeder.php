@@ -22,9 +22,10 @@ class DatabaseSeeder extends Seeder
             BlogSeeder::class,
             RaffleSeeder::class,
             BannerSeeder::class,
+            PaymentSeeder::class,
+            TicketSeeder::class,
             // Pivot tables
             BlogCategorySeeder::class,
-            TicketSeeder::class,
         ]);
     }
 }

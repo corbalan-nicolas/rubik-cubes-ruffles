@@ -14,7 +14,13 @@ class NavLink extends Component
     public function __construct(
         public string $route,
         public string $class = '',
-    ){}
+        public array $params = [],
+        public bool|null $activeCondition = null
+    ){
+        if ($activeCondition === null) {
+            $this->activeCondition = request()->routeIs($route);
+        }
+    }
 
     /**
      * Get the view / contents that represent the component.

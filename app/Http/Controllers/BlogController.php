@@ -14,13 +14,15 @@ use Intervention\Image\Laravel\Facades\Image;
 
 class BlogController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $blogs = Blog::where('status', 'published')->get();
 
         return view('blogs.index', ['blogs' => $blogs]);
     }
 
-    public function show(int $id) {
+    public function show(int $id)
+    {
         $blog = Blog::with('categories')->where('id', $id)->get()->first();
 
         return view('blogs.show', [
@@ -28,7 +30,8 @@ class BlogController extends Controller
         ]);
     }
 
-    public function admin_my_blogs() {
+    public function admin_my_blogs()
+    {
         $author_id = auth()->user()->id;
 
         $blogsDraft = Blog::where('author_id', $author_id)->where('status', 'draft')->orderBy('updated_at', 'desc')->get();
@@ -45,24 +48,16 @@ class BlogController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
-        $data = $request->validate([
-            'title' => 'required',
-            'desc' => 'required',
-        ]);
-
-        $blog = new Blog();
-        $blog->title = $data['title'];
-        $blog->desc = $data['desc'];
-        $blog->author_id = auth()->user()->id;
-        $blog->save();
-
-        return to_route('dashboard.blogs.edit', ['id' => $blog->id]);
-    }
-
-    public function edit(int $id) {
+    public function edit(int $id = 0)
+    {
         $blog = Blog::with('categories')->where('id', $id)->get()->first();
         $categories = Category::all();
+
+        if (!$blog) {
+            $blog = new Blog();
+            $blog->id = 0;
+            return view('dashboard.blogs-edit', ['blog' => $blog, 'categories' => $categories]);
+        }
 
         if ($blog->status === 'published') {
             return to_route('dashboard.blogs')
@@ -74,22 +69,32 @@ class BlogController extends Controller
         return view('dashboard.blogs-edit', ['blog' => $blog, 'categories' => $categories]);
     }
 
-    public function update(Request $request, int $id) {
-        Log::debug('[BlogController::update()] Method is being executed.');
-        $blog = Blog::findOrFail($id);
+    public function update(Request $request, int $id)
+    {
+        Log::info('------------------------------------------------------------------------------------------');
+        Log::info('[BlogController::update()] Method is being executed.');
+
+        $blog = null;
+        if ($id != 0) {
+            Log::info('[BlogController::update()] Blog already exists.');
+            $blog = Blog::find($id);
+        } else {
+            Log::info('[BlogController::update()] We need to create the blog');
+            $blog = new Blog();
+            $blog->author_id = auth()->user()->id;
+        }
 
         $data = $request->only(['title', 'body', 'desc', 'cover', 'cover_alt', 'categories']);
 
-        Log::debug('[BlogController::update()] Do we have a cover here???');
+        Log::info('[BlogController::update()] Do we have a cover here???');
         $oldCover = null;
         if ($request->hasFile('cover')) {
-            Log::debug('[BlogController::update()] There is a new cover!');
+            Log::info('[BlogController::update()] There is a new cover!');
 
-            // TODO: Combine resize with resizeCanvas to avoid stretch images
             $upload = $request->file('cover');
-            $image = Image::read($upload)->resize(300, 158);
+            $image = Image::read($upload)->cover(300, 158);
             $path = 'covers/' . Str::random() . '.' . $upload->getClientOriginalExtension();
-            Storage::put(
+            Storage::disk('public')->put(
               $path,
               $image->encodeByExtension($upload->getClientOriginalExtension(), quantity: 70)
             );
@@ -101,9 +106,9 @@ class BlogController extends Controller
             $data['cover'] = $blog->cover;
         }
 
-        if($oldCover !== null && \Storage::exists($oldCover)) {
-            Log::debug('[BlogController::update()] Deleting old cover and replacing existing cover');
-            Storage::delete($oldCover);
+        if($oldCover !== null && \Storage::disk('public')->exists($oldCover)) {
+            Log::info('[BlogController::update()] Deleting old cover and replacing existing cover');
+            Storage::disk('public')->delete($oldCover);
         }
 
         Log::info('[BlogController::update()] Data:', ['data' => $data]);
@@ -116,14 +121,17 @@ class BlogController extends Controller
         $blog->save();
 
         $blog->categories()->sync($request->input('categories', []));
-        Log::debug('[BlogController::update()] All good here :), returning response');
+        Log::info('[BlogController::update()] All good here :), returning response');
         return response()->json(['data' => [
             'cover' => $blog->cover,
-            'cover_alt' => $blog->cover_alt
+            'cover_alt' => $blog->cover_alt,
+            'just_created' => $id == 0,
+            'id' => $blog->id
         ]]);
     }
 
-    public function request_publish(Blog $blog) {
+    public function request_publish(Blog $blog)
+    {
         $data = [
             'title' => $blog->title,
             'desc' => $blog->desc,
@@ -152,7 +160,8 @@ class BlogController extends Controller
         return to_route('dashboard.blogs');
     }
 
-    public function publish(Request $request, Blog $blog) {
+    public function publish(Request $request, Blog $blog)
+    {
         $blog->status = 'published';
         $blog->verifier_id = auth()->user()->id;
         $blog->save();
@@ -160,14 +169,16 @@ class BlogController extends Controller
         return to_route('dashboard.blogs');
     }
 
-    public function publish_requests() {
+    public function publish_requests()
+    {
         $requests = Blog::where('status', 'validating')->get();
 
         return view('dashboard.blogs-requests', ['requests' => $requests]);
     }
 
-    public function handle_publish_request_result(Blog $blog, Request $request) {
-        Log::debug('[BlogController handle_publish_request_result()] Method is being executed');
+    public function handle_publish_request_result(Blog $blog, Request $request)
+    {
+        Log::info('[BlogController handle_publish_request_result()] Method is being executed');
         $data = $request->only(['result', 'message']);
 
         // TODO: Validations? (send a message if the result is deny for example)
@@ -190,20 +201,24 @@ class BlogController extends Controller
         return to_route('dashboard.blogs.publish_requests');
     }
 
-    public function destroy(Blog $blog) {
+    public function destroy(Blog $blog)
+    {
+        $blog->categories()->detach();
         $blog->delete();
 
         return to_route('dashboard.blogs');
     }
 
-    public function move_to_draft(Blog $blog) {
+    public function move_to_draft(Blog $blog)
+    {
         $blog->status = 'draft';
         $blog->save();
 
         return to_route('dashboard.blogs');
     }
 
-    public function like(int $id) {
+    public function like(int $id)
+    {
         $blog = Blog::findOrFail($id);
 
         return to_route('blogs.show', ['id' => $id]);

@@ -2,11 +2,16 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RaffleController;
 use App\Http\Middleware\EnsureIsBlogOwner;
+use App\Http\Middleware\EnsureUserCanSeeProfile;
+use App\Http\Middleware\VerifyMercadoPagoPayment;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserHasMinimumRole;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MercadoPagoController;
 
 
 Route::controller(BlogController::class)
@@ -19,17 +24,6 @@ Route::controller(BlogController::class)
         Route::post('/{id}/like', 'like')
             ->middleware('auth')
             ->name('like');
-
-        Route::middleware('auth')->group(function () {
-            // Route::get('/create', 'create');
-            // Route::post('/create', 'store');;
-            // Route::post('/{id}/edit', 'edit')->name('edit');
-            // Route::post('/{id}/update', 'update')->name('update');
-            // Route::get('/{id}/preview', 'preview')->name('preview')
-            // Route::post('/{id}/send_to_validate', 'send_to_validate')->name('send');
-            // Route:.get('/{id}/delete', 'delete')->name('delete');
-            // Route::post('/{id}/delete', 'destroy')->name('destroy');
-        });
     });
 
 
@@ -54,6 +48,13 @@ Route::controller(AuthController::class)
         Route::post('/register', 'register')->name('register');
 
         Route::post('/logout', 'logout')->name('logout');
+
+        Route::view('/dashboard/my-profile/edit', 'dashboard.my-profile-edit')
+            ->middleware('auth')
+            ->name('edit.show');
+        Route::post('/dashboard/my-profile/edit', 'update')
+            ->middleware('auth')
+            ->name('edit');
     });
 
 
@@ -62,16 +63,15 @@ Route::middleware('auth')
     ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
-        Route::view('/', 'dashboard.index')->name('index');
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
 
 
 
         // USER PROFILE
-        Route::view('/my-profile', 'dashboard.my-profile')->name('my-profile.show');
         Route::get('/profiles', [UserController::class, 'all_users'])->name('all-users')
             ->middleware(EnsureUserHasMinimumRole::class.':4');
         Route::get('/profiles/{id}', [UserController::class, 'user_profile'])->name('user-profile.show')
-            ->middleware(EnsureUserHasMinimumRole::class.':4');
+            ->middleware(EnsureUserCanSeeProfile::class);
 
 
 
@@ -79,11 +79,8 @@ Route::middleware('auth')
         Route::get('/blogs', [BlogController::class, 'admin_my_blogs'])
             ->middleware(EnsureUserHasMinimumRole::class.':2')
             ->name('blogs');
-        Route::post('/blogs/create', [BlogController::class, 'store'])
-            ->middleware(EnsureUserHasMinimumRole::class.':2')
-            ->name('blogs.store');
-        Route::get('/blogs/{id}/edit', [BlogController::class, 'edit'])
-            ->middleware([EnsureUserHasMinimumRole::class.':2', EnsureIsBLogOwner::class])
+        Route::get('/blogs/edit/{id?}', [BlogController::class, 'edit'])
+            ->middleware([EnsureUserHasMinimumRole::class.':2'])
             ->name('blogs.edit');
         Route::post('/blogs/{id}/update', [BlogController::class, 'update'])
             ->middleware([EnsureUserHasMinimumRole::class.':2', EnsureIsBLogOwner::class])
@@ -116,3 +113,23 @@ Route::middleware('auth')
             ->middleware(EnsureUserHasMinimumRole::class.':3')
             ->name('my-raffles');
     });
+
+
+
+// MERCADO PAGO
+Route::get('/checkout', [MercadoPagoController::class, 'index'])
+    ->middleware('auth')
+    ->name('checkout');
+Route::get('/checkout/summary', [MercadoPagoController::class, 'summary'])
+    ->middleware('auth')
+    ->name('checkout.summary');
+Route::get('/checkout/success', [MercadoPagoController::class, 'success'])
+//    ->middleware('auth')
+    ->name('checkout.success');
+Route::get('/checkout/failure', [MercadoPagoController::class, 'failure'])
+//    ->middleware('auth')
+    ->name('checkout.failure');
+Route::post('/checkout/verify-payment', [MercadoPagoController::class, 'verify_payment'])
+    ->middleware(VerifyMercadoPagoPayment::class)
+    ->withoutMiddleware(VerifyCsrfToken::class)
+    ->name('checkout.verify');

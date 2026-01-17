@@ -36,7 +36,7 @@
     @endif
 </div>
 
-<script defer>
+<script>
     const ToastNotifications = {
         dismissToast: document.querySelectorAll('[data-dismiss-toast]'),
 

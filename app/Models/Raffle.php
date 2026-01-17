@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Date;
 
 class Raffle extends Model
 {
-    public function participants(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function tickets(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(User::class, 'tickets');
+        return $this->hasMany(Ticket::class);
     }
 
     public function sponsor(): \Illuminate\Database\Eloquent\Relations\BelongsTo

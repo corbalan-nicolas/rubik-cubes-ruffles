@@ -11,27 +11,6 @@ use PHPUnit\Framework\Attributes\Ticket;
 
 class User extends Authenticatable
 {
-    public function has_blogs() {
-        return $this->hasMany(Blog::class);
-    }
-
-    public function likes() {
-        return $this->belongsToMany(
-            Blog::class,
-            'likes',
-        );
-    }
-
-    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function tickets(): \Illuminate\Database\Eloquent\Relations\belongsToMany
-    {
-        return $this->belongsToMany(raffle::class, 'tickets');
-    }
-
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
@@ -67,5 +46,33 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function has_blogs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Blog::class);
+    }
+
+    public function likes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            Blog::class,
+            'likes',
+        );
+    }
+
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function tickets(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    public function payments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }

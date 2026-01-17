@@ -9,10 +9,10 @@
 
     <h1 class="sr-only">Rubbik's cube raffles</h1>
 
-    <section class="container">
+    <div class="container">
         {{-- TODO: Responsive banners --}}
         <x-raffle-banners :raffle="$raffle" />
-    </section>
+    </div>
 
     <section class="container-sm container--participate">
         <div class="model">
@@ -36,11 +36,7 @@
 
             <p>{{ $raffle->desc }}</p>
 
-            <button class="btn btn-primary">Buy My Ticket</button>
-
-            <p>Pay with ease and secure</p>
-            <x-icons.visa />
-            <x-icons.mastercard />
+            <a class="mt-4 btn btn-primary btn-full" href="{{ route('checkout') }}">Buy My Ticket</a>
         </div>
     </section>
 
@@ -90,7 +86,7 @@
             </summary>
 
             <div class="summary__body">
-                <p>Currently, each ticket costs USD$0.99 pesos. We have no plans to change it.</p>
+                <p>Currently, each ticket costs USD$1 and we have no plans to change it.</p>
             </div>
         </details>
 

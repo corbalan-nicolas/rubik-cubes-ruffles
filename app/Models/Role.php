@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    public function user() {
+    public function user(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany('App\Models\User');
     }
 }

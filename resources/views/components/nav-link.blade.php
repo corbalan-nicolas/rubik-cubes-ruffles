@@ -2,6 +2,8 @@
 /**
  * @var string $route
  * @var string $class
+ * @var array $params
+ * @var boolean $activeCondition
  */
 ?>
 
@@ -9,8 +11,8 @@
     @class([
         "nav-link",
         $class,
-        "active" => request()->routeIs($route)
+        "active" => $activeCondition
     ])
     {{ request()->routeIs($route) ? 'aria-current=page' : ''  }}
-    href="{{ route($route) }}"
+    href="{{ route($route, $params) }}"
 >{{ $slot }}</a>

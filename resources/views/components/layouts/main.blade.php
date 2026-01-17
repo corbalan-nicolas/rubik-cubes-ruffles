@@ -47,11 +47,9 @@
 
                 <div class="flex justify-end gap-2 items-center">
                     @auth
-                        <form action="{{ route('auth.logout') }}" method="post">
-                            @csrf
-                            <button class="btn">Logout</button>
-                        </form>
-                        <a class="btn btn-primary" href="{{ route('dashboard.index') }}">Dashboard</a>
+                        <a class="btn btn-primary" href="{{ route('dashboard.index') }}">
+                            <x-icons.user />
+                        </a>
                     @else
                         <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" class="btn" route="auth.login.show">Login</x-nav-link>
                         <x-nav-link class="border-y-6 border-transparent [.active]:border-t-text [.active]:bg-neutral-light" class="btn btn-primary" route="auth.register.show">Register</x-nav-link>

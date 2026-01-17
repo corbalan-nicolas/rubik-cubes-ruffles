@@ -11,7 +11,7 @@
 
     <div class="grid grid-rows-[1fr_auto]">
         <div class="py-2 px-4">
-            <p class="text-xl font-h">{{ $blog->title }}</p>
+            <h3 class="text-xl font-h">{{ $blog->title }}</h3>
             <p class="text-sm">Wrote it by {{ $blog->author->display_name }}</p>
         </div>
 

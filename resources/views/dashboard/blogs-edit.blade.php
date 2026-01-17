@@ -52,8 +52,8 @@ https://quilljs.com/docs/quickstart
 
         <div id="options" class="not-[.active]:hidden active bg-neutral-light p-4">
             <div>
-                <div>
-                    <label for="cover" title="Change blog's cover" aria-label="Cover">
+                <div class="mb-4">
+                    <label for="cover" title="Change blog's cover">
                         <x-blogs.cover class="w-full cursor-pointer hover:brightness-90" :blog="$blog" />
                     </label>
                     <div class="hidden">
@@ -66,7 +66,7 @@ https://quilljs.com/docs/quickstart
                     </div>
                 </div>
 
-                <div>
+                <div class="mb-4">
                     <label for="cover_alt">Cover description</label>
                     <input
                         id="cover_alt"
@@ -80,7 +80,7 @@ https://quilljs.com/docs/quickstart
                 </div>
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="title">Title <span>*</span></label>
                 <input id="title"
                        class="input"
@@ -91,7 +91,7 @@ https://quilljs.com/docs/quickstart
                 >
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="desc">Description <span>*</span></label>
                 <textarea
                     name="desc"
@@ -101,7 +101,7 @@ https://quilljs.com/docs/quickstart
                 >{{old('desc', $blog->desc)}}</textarea>
             </div>
 
-            <div>
+            <div class="mb-4">
                 <label for="categories">Categories *</label>
                 {{-- https://slimselectjs.com/selects#multiple TODO: Apply customize styling --}}
                 <select id="categories" name="categories[]" multiple>
@@ -115,7 +115,7 @@ https://quilljs.com/docs/quickstart
             </div>
 
             @if(auth()->user()->role_id < 4)
-                <form action="{{ route('dashboard.blogs.request_publish', ['blog' => $blog->id]) }}" method="post">
+                <form id="publish-form" action="{{ route('dashboard.blogs.request_publish', ['blog' => $blog->id === 0 ? -666 : $blog->id]) }}" method="post">
                     @csrf
 
                     @if($errors->any())
@@ -132,12 +132,12 @@ https://quilljs.com/docs/quickstart
                         </div>
                     @endif
 
-                    <button class="btn btn-primary btn-full">Request for publish</button>
+                    <button id="publish-button" class="btn btn-primary btn-full">Request for publish</button>
                 </form>
             @else
-                <form action="{{ route('dashboard.blogs.publish', ['blog' => $blog->id]) }}" method="post">
+                <form id="publish-form" action="{{ route('dashboard.blogs.publish', ['blog' => $blog->id === 0 ? -666 : $blog->id]) }}" method="post">
                     @csrf
-                    <button class="btn btn-primary btn-full">Publish</button>
+                    <button id="publish-button" class="btn btn-primary btn-full">Publish</button>
                 </form>
             @endif
         </div>
@@ -148,10 +148,12 @@ https://quilljs.com/docs/quickstart
     SCRIPT
 --}}
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script defer>
+<script>
 // VARIABLES
 const $formControls = document.querySelectorAll(':is(input, textarea, selector)')
 let saveTimeout = null;
+let blogId = {{ $blog->id }};
+let isDoingTheFirstFetch = undefined
 
 const toolbar = [
     [{'header': ['normal', '1', '2','3','4','5','6']}],
@@ -183,14 +185,27 @@ const $containerOptions = document.querySelector('#options')
 
 
 
+// Events
 $formControls.forEach($control => $control.addEventListener('input', handleInput))
-quill.on('editor-change', handleInput)
+quill.on('text-change', handleInput)
 $btnOpenAndCloseOptions.addEventListener('click', () => $containerOptions.classList.toggle('active'))
+window.addEventListener('pagehide', () => {
+    if(blogId === 0) return
+
+    console.log('pagehide event')
+    const data = getFormData()
+    let url = "{{ route('dashboard.blogs.update', ['id' => -666])}}"
+    url = url.replace('-666', blogId)
+
+    navigator.sendBeacon(url, data)
+})
 
 
 
+// Methods
 function handleInput() {
     document.querySelector('#saving-feedback').innerText = 'Saving...'
+    document.querySelector('#publish-button').disabled = true // This is not perfect, but it works at least for the first time
 
     if (saveTimeout !== null) {
         clearTimeout(saveTimeout)
@@ -229,8 +244,16 @@ function getFormData() {
 }
 
 async function fetchSave(body) {
-    // console.log('fetchSave()')
-    const url = "{{ route('dashboard.blogs.update', ['id' => $blog->id]) }}"
+    if (blogId === 0 && isDoingTheFirstFetch) {
+        return
+    }
+
+    if (isDoingTheFirstFetch === undefined) {
+        isDoingTheFirstFetch = true
+    }
+
+    let url = "{{ route('dashboard.blogs.update', ['id' => -666])}}"
+    url = url.replace('-666', blogId)
     const options = {
         method: 'POST',
         headers: {
@@ -250,15 +273,33 @@ async function fetchSave(body) {
     updateUIElements({...data})
 }
 
-function updateUIElements({cover = '', cover_alt = ''}) {
+function updateUIElements({cover = '', cover_alt = '', just_created = false, id = 0}) {
     const baseStoragePath = '{{ str_replace('\\', '/', \Storage::url('/')) }}';
+    const $cover = document.querySelector(`#cover-${blogId}`)
 
     if (cover !== '' && cover !== 'undefined' && cover !== null) {
-        document.querySelector('#cover-{{$blog->id}}').src = baseStoragePath + cover
+        $cover.src = baseStoragePath + cover
     }
 
     if (cover_alt !== '' && cover !== 'undefined' && cover !== null) {
-        document.querySelector('#cover-{{$blog->id}}').alt = cover_alt ?? ''
+        $cover.alt = cover_alt ?? ''
     }
+
+    if (just_created) {
+        console.log('Blog just created...')
+        const $publishForm = document.querySelector('#publish-form')
+        blogId = id
+
+        $publishForm.action = $publishForm.action.replace('-666', blogId)
+        $cover.id = `cover-${blogId}`
+
+        const newUrl = location.pathname + '/' + blogId
+        history.replaceState({}, '', newUrl)
+
+        handleInput() // If the user has changed something during the first fetch, I want to save it
+    }
+
+    isDoingTheFirstFetch = false
+    document.querySelector('#publish-button').disabled = false
 }
 </script>

@@ -7,7 +7,7 @@
 $modalSelector = 'blog-modal-preview';
 ?>
 
-<dialog id="{{ $modalSelector }}" class="m-auto backdrop:bg-black/60">
+<dialog id="{{ $modalSelector }}" class="m-auto overflow-x-hidden backdrop:bg-black/60">
     <div class="bg-neutral">
         <div class="flex justify-between items-center border-b border-black/10 bg-neutral-lighter">
             <div class="py-2 px-4">
@@ -57,7 +57,7 @@ $modalSelector = 'blog-modal-preview';
     </div>
 </dialog>
 
-<script defer>
+<script>
     // Component object
     const BlogModalPreview = {
         blog: {

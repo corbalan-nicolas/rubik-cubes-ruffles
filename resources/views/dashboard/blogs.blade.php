@@ -11,10 +11,14 @@
 <x-layouts.dashboard>
     <x-slot:title>My blogs</x-slot:title>
 
-    <h2 class="text-6xl mb-4">My blogs</h2>
+    <h1 class="text-6xl mb-4">My blogs</h1>
 
-    <button data-open-form-create-blog class="btn btn-primary my-2">Write new blog</button>
-    <x-blogs.form-create />
+    <div class="flex justify-start">
+        <a
+            class="btn btn-primary btn-icon"
+            href="{{ route('dashboard.blogs.edit') }}"
+        ><x-icons.writing />Write new blog</a>
+    </div>
 
     @if (!$hasBlogs)
         <p>You don't have any blogs yet 🤸‍♂️</p>
@@ -22,8 +26,8 @@
 
     @if (count($blogsDraft))
         <section>
-            <h3 class="text-4xl my-6">Drafts</h3>
-            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
+            <h2 class="text-4xl my-6">Drafts</h2>
+            <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(225px,1fr))]">
                 @foreach($blogsDraft as $blog)
                     <x-blogs.card-draft :blog="$blog" />
                 @endforeach
@@ -33,8 +37,8 @@
 
     @if (count($blogsValidating))
         <section>
-            <h3 class="text-4xl my-6">Awaiting validation</h3>
-            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
+            <h2 class="text-4xl my-6">Awaiting validation</h2>
+            <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(225px,1fr))]">
                 @foreach($blogsValidating as $blog)
                     <x-blogs.card-validating :blog="$blog" />
                 @endforeach
@@ -44,12 +48,12 @@
 
     @if (count($blogsPublished))
         <section>
-            <h3 class="text-4xl my-6">Published</h3>
+            <h2 class="text-4xl my-6">Published</h2>
             <p>Thank you for being part of this!</p>
 
             {{-- Should I let the user unpublish any blog whenever they want? Or should this also be a request?
              Honestly, I'm not really sure tbh, but I'll allow it just to keep things simple 🤷‍♂️ --}}
-            <div class="grid gap-4 grid-cols-[repeat(auto-fit,300px)]">
+            <div class="grid gap-4 grid-cols-[repeat(auto-fill,minmax(225px,1fr))]">
                 @foreach($blogsPublished as $blog)
                     <x-blogs.card-published :blog="$blog" />
                 @endforeach
@@ -94,7 +98,7 @@
     </dialog>
     {{-- I will be honest with you, I don't think this should be here,
     so if I forget to move it anywhere else, I'm sorry :( --}}
-    <script defer>
+    <script>
         const $modalConfirmDelete = document.querySelector('#modal-confirm-delete')
         const $form = document.querySelector('#modal-confirm-delete-form')
         const $blog = document.querySelector('#modal-confirm-delete-blog')
@@ -143,7 +147,7 @@
         </div>
     </dialog>
 
-    <script defer>
+    <script>
         const $modalConfirmCancelValidation = document.querySelector('#modal-confirm-cancel-validation')
         const $formConfirmCancelValidation = document.querySelector('#modal-confirm-cancel-validation-form')
         const $blogConfirmCancelValidation = document.querySelector('#modal-confirm-cancel-validation-blog')

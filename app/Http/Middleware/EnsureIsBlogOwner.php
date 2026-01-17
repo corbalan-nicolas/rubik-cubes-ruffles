@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Blog;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,12 +18,20 @@ class EnsureIsBlogOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $blog = $request->route('blog') ?? null;
-        $id = $request->route('id') ?? null;
+        Log::info('--------------------------------------------------------------------------------------------------');
+        Log::info('[EnsureIsBlogOwner] Middleware');
 
-        if ($id !== null) {
-            $blog = Blog::findOrFail($id);
+        $blog = $request->route('blog') ?? null;
+        $id = $request->route('id');
+
+        Log::info('ID: '. $id);
+        Log::info('Should I just let him pass?: ' . $id == 0 ? 'Yes' : 'No');
+
+        if ($id == 0) {
+            return $next($request);
         }
+
+        $blog = Blog::findOrFail($id);
 
         if ($blog->author_id !== auth()->user()->id) {
             Session::flash('toast.message', "You cannot proceed because that blog it's not yours");

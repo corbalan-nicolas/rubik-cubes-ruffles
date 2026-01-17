@@ -18,7 +18,8 @@
             <button>Search</button>
         </form>--}}
 
-        <section class="pt-4">
+        <section class="px-4 pt-4">
+            <h2 class="sr-only">List of all blogs</h2>
             @forelse($blogs as $blog)
                 <article class="grid grid-cols-[auto_1fr] mb-4">
                     <div>

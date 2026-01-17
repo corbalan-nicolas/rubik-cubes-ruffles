@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 
 class RaffleController extends Controller
 {
-    //
-    public function index() {
+    public function index()
+    {
         $raffle = Raffle::currentRaffle();
         return view('home', ['raffle' => $raffle]);
     }
 
-    public function my_raffles() {
+    public function my_raffles()
+    {
         return view('dashboard.my-raffles');
     }
 }
